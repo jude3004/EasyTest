@@ -20,7 +20,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,23 +39,28 @@ public class SignUpFragment extends Fragment {
     private EditText mailEt,passEt,confirmPassEt;
     private FirebaseAuth mAuth;
     private TextView signUpToLogInTxt;
+    private FirebaseFirestore db;
 
 
     private void attachComponents(){
         try{
             signUpBtn=objectSignUpFragment.findViewById(R.id.btnSignUp);
+            db=FirebaseFirestore.getInstance();
             mailEt=objectSignUpFragment.findViewById(R.id.etEmailSignUp);
             passEt=objectSignUpFragment.findViewById(R.id.etPassSignUp);
             confirmPassEt=objectSignUpFragment.findViewById(R.id.etPassConfirmSignUp);
             signUpToLogInTxt=objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
-
             mAuth= FirebaseAuth.getInstance();
-
+            String email= mailEt.getText().toString();
+            String password= passEt.getText().toString();
+            Map<String,Object> user= new HashMap<>();
+            user.put("Email",email);
+            user.put("Password",password);
+            db.collection("user")
+            .add(user);
             signUpBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    createUser();
-                }
+                public void onClick(View view) {createUser();}
             });
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
