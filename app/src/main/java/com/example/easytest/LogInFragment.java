@@ -40,13 +40,17 @@ public class LogInFragment extends Fragment {
         passEt=objectLogInFragment.findViewById(R.id.etPassLogIn);
         logInToSignUpTxt=objectLogInFragment.findViewById(R.id.txtSignUpLogIn);
         forgotpasswordtxt=objectLogInFragment.findViewById(R.id.txtforgotpasswordlogin);
-
         mAuth=FirebaseAuth.getInstance();
 
         logInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logInUser();
+                HomePageFragment homepagefragment=new HomePageFragment();
+                FragmentManager manager=getFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.frameLayoutMain,homepagefragment,homepagefragment.getTag())
+                        .commit();
             }
         });
 

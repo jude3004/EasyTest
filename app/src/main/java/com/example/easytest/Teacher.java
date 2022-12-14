@@ -1,7 +1,8 @@
 package com.example.easytest;
 
-import java.util.ArrayList;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.util.ArrayList;
 public class Teacher {
     private String name;
     private String car;

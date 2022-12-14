@@ -36,7 +36,7 @@ public class SignUpFragment extends Fragment {
 
     View objectSignUpFragment;
     private Button signUpBtn;
-    private EditText mailEt,passEt,confirmPassEt;
+    private EditText mailEt,passEt,confirmPassEt, etusername;
     private FirebaseAuth mAuth;
     private TextView signUpToLogInTxt;
     private FirebaseFirestore db;
@@ -50,17 +50,27 @@ public class SignUpFragment extends Fragment {
             passEt=objectSignUpFragment.findViewById(R.id.etPassSignUp);
             confirmPassEt=objectSignUpFragment.findViewById(R.id.etPassConfirmSignUp);
             signUpToLogInTxt=objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
+            etusername=objectSignUpFragment.findViewById(R.id.etUsername);
             mAuth= FirebaseAuth.getInstance();
             String email= mailEt.getText().toString();
             String password= passEt.getText().toString();
+            String username= etusername.getText().toString();
             Map<String,Object> user= new HashMap<>();
             user.put("Email",email);
             user.put("Password",password);
+            user.put("Username",username);
             db.collection("user")
             .add(user);
             signUpBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {createUser();}
+                public void onClick(View view) {
+                    createUser();
+                    LogInFragment logInFragment=new LogInFragment();
+                    FragmentManager manager=getFragmentManager();
+                    manager.beginTransaction()
+                            .replace(R.id.frameLayoutMain,logInFragment,logInFragment.getTag())
+                            .commit();
+                }
             });
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,7 +138,7 @@ public class SignUpFragment extends Fragment {
 
     public void createUser(){
         try{
-            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()){
+            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()){
                 if(passEt.getText().toString().equals(confirmPassEt.getText().toString())){
                     mAuth.createUserWithEmailAndPassword(mailEt.getText().toString(),passEt.getText().toString())
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
