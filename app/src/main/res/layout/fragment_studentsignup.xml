@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StudentsignupFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/signupbtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="149dp"
+            android:layout_marginTop="530dp"
+            android:layout_marginEnd="168dp"
+            android:layout_marginBottom="153dp"
+            android:text="signup"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/nameet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="76dp"
+            android:layout_marginTop="155dp"
+            android:layout_marginEnd="125dp"
+            android:layout_marginBottom="36dp"
+            android:ems="10"
+            android:hint="Name.."
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/birthdayet"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/birthdayet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="66dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="135dp"
+            android:layout_marginBottom="23dp"
+            android:ems="10"
+            android:hint="birthday"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/teacher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameet" />
+
+        <EditText
+            android:id="@+id/teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="136dp"
+            android:layout_marginBottom="39dp"
+            android:ems="10"
+            android:hint="teacher's name"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/areaet"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birthdayet" />
+
+        <EditText
+            android:id="@+id/areaet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="39dp"
+            android:layout_marginEnd="152dp"
+            android:layout_marginBottom="90dp"
+            android:ems="10"
+            android:hint="area"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/signupbtn2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/teacher" />
+
+        <RadioGroup
+            android:id="@+id/radio_button"
+            android:layout_width="186dp"
+            android:layout_height="125dp"
+            android:layout_marginStart="119dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="292dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.553"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" >
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="yes" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="no" />
+        </RadioGroup>
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="65dp"
+            android:layout_marginBottom="26dp"
+            android:text="do you have teyoria?"
+            app:layout_constraintBottom_toTopOf="@+id/radio_button"
+            app:layout_constraintEnd_toStartOf="@+id/signupbtn2"
+            app:layout_constraintHorizontal_bias="0.196"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/areaet"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
