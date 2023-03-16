@@ -62,6 +62,7 @@ public class LogInFragment extends Fragment {
                         .commit();
             }
         });
+
         forgotpasswordtxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

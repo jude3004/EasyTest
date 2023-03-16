@@ -77,35 +77,38 @@ public class SignUpFragment extends Fragment {
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     if (checkedId == R.id.radio_button_1) {
                         user.put("usertype", "teacher");
+
                     }
                     else if (checkedId == R.id.radio_button_2) {
                         user.put("usertype", "student");
                     }
                 }
             });
+
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createUser();
-                int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                if (checkedRadioButtonId == R.id.radio_button_1)
-                {
-                    TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
-                    FragmentManager manager = getFragmentManager();
-                    manager.beginTransaction()
-                            .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
-                            .commit();
-                }
-                else
-                {
-                    StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
-                    FragmentManager manager = getFragmentManager();
-                    manager.beginTransaction()
-                            .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
-                            .commit();
+                String userType = (String) user.get("usertype");
 
+                if (userType != null) {
+                    if (userType.equals("teacher")) {
+                        TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
+                        FragmentManager manager = getFragmentManager();
+                        manager.beginTransaction()
+                                .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
+                                .commit();
+                        // usertype is teacher
+                        // your code here
+                    } else if (userType.equals("student")) {
+                        StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
+                        FragmentManager manager = getFragmentManager();
+                        manager.beginTransaction()
+                                .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
+                                .commit();
+                        // usertype is student
+                        // your code here
+                    }
                 }
-
             }
 
         });
@@ -171,7 +174,7 @@ public class SignUpFragment extends Fragment {
     public void createUser(){
         try{
             int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()&& checkedRadioButtonId != -1){
+            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()){
                 if(passEt.getText().toString().equals(confirmPassEt.getText().toString())){
                     mAuth.createUserWithEmailAndPassword(mailEt.getText().toString(),passEt.getText().toString())
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -220,7 +223,7 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        objectSignUpFragment=inflater.inflate(R.layout.fragment_log_in,container,false);
+        objectSignUpFragment=inflater.inflate(R.layout.fragment_sign_up,container,false);
         attachComponents();
 
         return objectSignUpFragment;
