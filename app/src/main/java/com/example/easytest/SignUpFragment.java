@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import java.util.regex.Pattern;
 public class SignUpFragment extends Fragment {
 
     View objectSignUpFragment;
+    private RadioButton rbstudent, rbteacher;
     private Button signUpBtn;
     private EditText mailEt,passEt,confirmPassEt, etusername;
     private FirebaseAuth mAuth;
@@ -52,6 +54,8 @@ public class SignUpFragment extends Fragment {
             signUpToLogInTxt = objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
             etusername = objectSignUpFragment.findViewById(R.id.etUsername);
             radioGroup = objectSignUpFragment.findViewById(R.id.radio_group);
+        rbstudent = (RadioButton) objectSignUpFragment.findViewById(R.id.radio_button_2);
+        rbteacher = (RadioButton) objectSignUpFragment.findViewById(R.id.radio_button_1);
             mAuth = FirebaseAuth.getInstance();
             String email = mailEt.getText().toString();
             String password = passEt.getText().toString();
@@ -75,40 +79,37 @@ public class SignUpFragment extends Fragment {
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (checkedId == R.id.radio_button_1) {
+                    if (rbteacher.isChecked()) {
                         user.put("usertype", "teacher");
 
                     }
-                    else if (checkedId == R.id.radio_button_2) {
+                    else if (rbstudent.isChecked()) {
                         user.put("usertype", "student");
                     }
                 }
             });
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                String userType = (String) user.get("usertype");
-
-                if (userType != null) {
-                    if (userType.equals("teacher")) {
-                        TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
-                        FragmentManager manager = getFragmentManager();
-                        manager.beginTransaction()
-                                .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
-                                .commit();
-                        // usertype is teacher
-                        // your code here
-                    } else if (userType.equals("student")) {
-                        StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
-                        FragmentManager manager = getFragmentManager();
-                        manager.beginTransaction()
-                                .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
-                                .commit();
-                        // usertype is student
-                        // your code here
-                    }
+                createUser();
+                if (rbteacher.isChecked()) {
+                    TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
+                    FragmentManager manager = getFragmentManager();
+                    manager.beginTransaction()
+                            .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
+                            .commit();
                 }
+                if (rbstudent.isChecked()) {
+                    StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
+                    FragmentManager manager = getFragmentManager();
+                    manager.beginTransaction()
+                            .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
+                            .commit();
+                }
+
+
             }
 
         });
@@ -174,7 +175,8 @@ public class SignUpFragment extends Fragment {
     public void createUser(){
         try{
             int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()){
+            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()&&radioGroup.getCheckedRadioButtonId() != -1)
+            {
                 if(passEt.getText().toString().equals(confirmPassEt.getText().toString())){
                     mAuth.createUserWithEmailAndPassword(mailEt.getText().toString(),passEt.getText().toString())
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {

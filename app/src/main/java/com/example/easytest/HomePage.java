@@ -24,7 +24,7 @@ public class HomePage extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.FrameLayout, new HomePageFragment());
+        transaction.replace(R.id.FrameLayout, new Homepagefragment());
         transaction.commit();
         attachComponents();
     }
@@ -48,7 +48,7 @@ public class HomePage extends AppCompatActivity {
                         transaction.commit();
                         return b;
                     case R.id.home:
-                        transaction.replace(R.id.FrameLayout, new HomePageFragment());
+                        transaction.replace(R.id.FrameLayout, new Homepagefragment());
                         transaction.commit();
                         return b;
                 }
