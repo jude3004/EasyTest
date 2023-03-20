@@ -1,8 +1,10 @@
 package com.example.easytest;
 
+import static android.content.ContentValues.TAG;
 import static com.google.common.reflect.Reflection.initialize;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -54,16 +57,13 @@ public class SignUpFragment extends Fragment {
             signUpToLogInTxt = objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
             etusername = objectSignUpFragment.findViewById(R.id.etUsername);
             radioGroup = objectSignUpFragment.findViewById(R.id.radio_group);
-        rbstudent = (RadioButton) objectSignUpFragment.findViewById(R.id.radio_button_2);
-        rbteacher = (RadioButton) objectSignUpFragment.findViewById(R.id.radio_button_1);
+        rbstudent = objectSignUpFragment.findViewById(R.id.radio_button_2);
+        rbteacher = objectSignUpFragment.findViewById(R.id.radio_button_1);
             mAuth = FirebaseAuth.getInstance();
             String email = mailEt.getText().toString();
             String password = passEt.getText().toString();
             String username = etusername.getText().toString();
             Map<String, Object> user = new HashMap<>();
-            user.put("Email", email);
-            user.put("Password", password);
-            user.put("Username", username);
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -113,8 +113,22 @@ public class SignUpFragment extends Fragment {
             }
 
         });
-        db.collection("user")
-                .add(user);
+        user.put("Email", email);
+        user.put("Password", password);
+        user.put("Username", username);
+        db.collection("user").add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.w(TAG,"document snapshot added with ID: "+ documentReference.getId());
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG,"error adding document "+ e);
+                    }
+                });
     }
 
 
