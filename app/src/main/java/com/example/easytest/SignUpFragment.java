@@ -57,12 +57,9 @@ public class SignUpFragment extends Fragment {
             signUpToLogInTxt = objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
             etusername = objectSignUpFragment.findViewById(R.id.etUsername);
             radioGroup = objectSignUpFragment.findViewById(R.id.radio_group);
-        rbstudent = objectSignUpFragment.findViewById(R.id.radio_button_2);
-        rbteacher = objectSignUpFragment.findViewById(R.id.radio_button_1);
+             rbstudent = objectSignUpFragment.findViewById(R.id.radio_button_2);
+             rbteacher = objectSignUpFragment.findViewById(R.id.radio_button_1);
             mAuth = FirebaseAuth.getInstance();
-            String email = mailEt.getText().toString();
-            String password = passEt.getText().toString();
-            String username = etusername.getText().toString();
             Map<String, Object> user = new HashMap<>();
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,11 +86,31 @@ public class SignUpFragment extends Fragment {
                 }
             });
 
+
         signUpBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                createUser();
+                String email = mailEt.getText().toString().trim();
+                String password = passEt.getText().toString().trim();
+                String username = etusername.getText().toString().trim();
+                user.put("Email", email);
+                user.put("Password", password);
+                user.put("Username", username);
+                db.collection("user")
+                        .add(user)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
                 if (rbteacher.isChecked()) {
                     TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
                     FragmentManager manager = getFragmentManager();
@@ -101,34 +118,18 @@ public class SignUpFragment extends Fragment {
                             .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
                             .commit();
                 }
-                if (rbstudent.isChecked()) {
+                else if  (rbstudent.isChecked()) {
                     StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
                     FragmentManager manager = getFragmentManager();
                     manager.beginTransaction()
                             .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
                             .commit();
                 }
-
+                createUser();
 
             }
 
         });
-        user.put("Email", email);
-        user.put("Password", password);
-        user.put("Username", username);
-        db.collection("user").add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.w(TAG,"document snapshot added with ID: "+ documentReference.getId());
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG,"error adding document "+ e);
-                    }
-                });
     }
 
 
@@ -186,9 +187,8 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    public void createUser(){
-        try{
-            int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+    public void createUser()
+    {
             if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()&&radioGroup.getCheckedRadioButtonId() != -1)
             {
                 if(passEt.getText().toString().equals(confirmPassEt.getText().toString())){
@@ -217,10 +217,7 @@ public class SignUpFragment extends Fragment {
                 Toast.makeText(getContext(), "Missing fields identified.", Toast.LENGTH_SHORT).show();
             }
         }
-        catch (Exception e){
-            Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
-    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
