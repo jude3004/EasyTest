@@ -2,11 +2,27 @@ package com.example.easytest;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import static android.content.ContentValues.TAG;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +30,85 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+private Button log,del;
+private TextView usertypeTextView,emailTextView,passwordTextView,usernameTextView;
+View objectProfile;
+private void attachComponents(){
+    log=objectProfile.findViewById(R.id.logout);
+    del=objectProfile.findViewById(R.id.delete);
+    usertypeTextView=objectProfile.findViewById(R.id.usertypeTextview);
+    usernameTextView=objectProfile.findViewById(R.id.usernameTextview);
+   emailTextView=objectProfile.findViewById(R.id.emailTextview);
+    passwordTextView=objectProfile.findViewById(R.id.passwordTextview);
+    FirebaseDetails();
+    log.setOnClickListener(new View.OnClickListener() {
 
+        @Override
+        public void onClick(View view) {
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            if (currentUser != null) {
+                currentUser.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful())
+                                    Log.d(TAG, "User account deleted.");
+                                 else
+                                    Log.e(TAG, "Error deleting user account.", task.getException());
+                            }
+                        });
+            }
+        }
+    });
+    del.setOnClickListener(new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            LogInFragment logInFragment = new LogInFragment();
+            FragmentManager manager = getFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.frameLayoutMain, logInFragment, logInFragment.getTag())
+                    .commit();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+            if (currentUser != null)
+                mAuth.signOut();
+
+        }
+    });
+
+}
+public void FirebaseDetails()
+        {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document("user_id");
+
+            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String email = documentSnapshot.getString("email");
+                        String password = documentSnapshot.getString("password");
+                        String username = documentSnapshot.getString("username");
+                        String usertype = documentSnapshot.getString("usertype");
+                        emailTextView.setText(email);
+                        passwordTextView.setText(password);
+                        usernameTextView.setText(username);
+                        usertypeTextView.setText(usertype);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "get failed with ", e);
+                }
+            });
+    }
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,7 +152,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        objectProfile=inflater.inflate(R.layout.fragment_profile,container,false);
+        attachComponents();
+
+        return objectProfile;
     }
 }

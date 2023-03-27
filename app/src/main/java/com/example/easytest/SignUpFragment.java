@@ -18,9 +18,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,21 +49,46 @@ public class SignUpFragment extends Fragment {
     private TextView signUpToLogInTxt;
     private FirebaseFirestore db;
     private RadioGroup radioGroup;
+    private boolean worked ;
+
 
 
     private void attachComponents() {
-            signUpBtn = objectSignUpFragment.findViewById(R.id.btnSignUp);
-            db = FirebaseFirestore.getInstance();
-            mailEt = objectSignUpFragment.findViewById(R.id.etEmailSignUp);
-            passEt = objectSignUpFragment.findViewById(R.id.etPassSignUp);
-            confirmPassEt = objectSignUpFragment.findViewById(R.id.etPassConfirmSignUp);
-            signUpToLogInTxt = objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
-            etusername = objectSignUpFragment.findViewById(R.id.etUsername);
-            radioGroup = objectSignUpFragment.findViewById(R.id.radio_group);
-             rbstudent = objectSignUpFragment.findViewById(R.id.radio_button_2);
-             rbteacher = objectSignUpFragment.findViewById(R.id.radio_button_1);
-            mAuth = FirebaseAuth.getInstance();
-            Map<String, Object> user = new HashMap<>();
+        signUpBtn = objectSignUpFragment.findViewById(R.id.btnSignUp);
+        db = FirebaseFirestore.getInstance();
+        mailEt = objectSignUpFragment.findViewById(R.id.etEmailSignUp);
+        passEt = objectSignUpFragment.findViewById(R.id.etPassSignUp);
+        confirmPassEt = objectSignUpFragment.findViewById(R.id.etPassConfirmSignUp);
+        signUpToLogInTxt = objectSignUpFragment.findViewById(R.id.signUpToLogInTxt);
+        etusername = objectSignUpFragment.findViewById(R.id.etUsername);
+        radioGroup = objectSignUpFragment.findViewById(R.id.radio_group);
+        rbstudent = objectSignUpFragment.findViewById(R.id.radio_button_2);
+        rbteacher = objectSignUpFragment.findViewById(R.id.radio_button_1);
+        mAuth = FirebaseAuth.getInstance();
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                createUser();
+                if (rbteacher.isChecked()) {
+                    TeacherSignupFragment teachersignupFragment = new TeacherSignupFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frameLayoutMain, teachersignupFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
+                }
+                else if  (rbstudent.isChecked()) {
+                    StudentSignupFragment studentsignupFragment = new StudentSignupFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frameLayoutMain, studentsignupFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            }
+
+
+        });
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -72,66 +100,7 @@ public class SignUpFragment extends Fragment {
                     }
 
             });
-
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (rbteacher.isChecked()) {
-                        user.put("usertype", "teacher");
-
-                    }
-                    else if (rbstudent.isChecked()) {
-                        user.put("usertype", "student");
-                    }
-                }
-            });
-
-
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                String email = mailEt.getText().toString().trim();
-                String password = passEt.getText().toString().trim();
-                String username = etusername.getText().toString().trim();
-                user.put("Email", email);
-                user.put("Password", password);
-                user.put("Username", username);
-                db.collection("user")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
-                            }
-                        });
-                if (rbteacher.isChecked()) {
-                    TeachersignupFragment teachersignupFragment = new TeachersignupFragment();
-                    FragmentManager manager = getFragmentManager();
-                    manager.beginTransaction()
-                            .replace(R.id.frameLayoutMain, teachersignupFragment, teachersignupFragment.getTag())
-                            .commit();
-                }
-                else if  (rbstudent.isChecked()) {
-                    StudentsignupFragment studentsignupFragment = new StudentsignupFragment();
-                    FragmentManager manager = getFragmentManager();
-                    manager.beginTransaction()
-                            .replace(R.id.frameLayoutMain, studentsignupFragment, studentsignupFragment.getTag())
-                            .commit();
-                }
-                createUser();
-
-            }
-
-        });
     }
-
 
 
 
@@ -168,6 +137,35 @@ public class SignUpFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public void addUserToFirestore() {
+        Map<String, Object> user = new HashMap<>();
+        String email = mailEt.getText().toString().trim();
+        String password = passEt.getText().toString().trim();
+        String username = etusername.getText().toString().trim();
+        user.put("Email", email);
+        user.put("Password", password);
+        user.put("Username", username);
+        if (rbteacher.isChecked())
+            user.put("Usertype", "Teacher");
+
+        else if  (rbstudent.isChecked())
+            user.put("Usertype", "Student");
+        db.collection("user")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
 
     public static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
@@ -196,6 +194,7 @@ public class SignUpFragment extends Fragment {
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
+                                    worked=true;
                                     Toast.makeText(getContext(), "Account created.", Toast.LENGTH_SHORT).show();
                                     if(mAuth.getCurrentUser()!=null){
                                         mAuth.signOut();
@@ -207,7 +206,16 @@ public class SignUpFragment extends Fragment {
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            })
+                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(worked==true){
+                                addUserToFirestore();
+                                worked=false;
+                            }
+                        }
+                    });
                 }
                 else{
                     Toast.makeText(getContext(), "Passwords do not match.", Toast.LENGTH_SHORT).show();
