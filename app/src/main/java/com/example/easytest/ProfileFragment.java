@@ -3,6 +3,7 @@ package com.example.easytest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,7 +23,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.auth.User;
+
+import java.util.HashMap;
+import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +47,6 @@ private void attachComponents(){
     usernameTextView=objectProfile.findViewById(R.id.usernameTextview);
    emailTextView=objectProfile.findViewById(R.id.emailTextview);
     passwordTextView=objectProfile.findViewById(R.id.passwordTextview);
-    FirebaseDetails();
     log.setOnClickListener(new View.OnClickListener() {
 
         @Override
@@ -79,36 +85,43 @@ private void attachComponents(){
 
         }
     });
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
-}
-public void FirebaseDetails()
-        {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference userRef = db.collection("users").document("user_id");
+    String userId = auth.getCurrentUser().getUid();
 
-            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    db.collection("users").document(userId).get()
+            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
-                        String email = documentSnapshot.getString("email");
-                        String password = documentSnapshot.getString("password");
-                        String username = documentSnapshot.getString("username");
-                        String usertype = documentSnapshot.getString("usertype");
+                        HashMap<String, Object> userMap = (HashMap<String, Object>) documentSnapshot.getData();
+                        String email = (String) userMap.get("email");
+                        String password = (String) userMap.get("password");
+                        String username = (String) userMap.get("username");
+                        String usertype = (String) userMap.get("usertype");
                         emailTextView.setText(email);
                         passwordTextView.setText(password);
                         usernameTextView.setText(username);
                         usertypeTextView.setText(usertype);
+                        // use the userMap object as needed
                     } else {
                         Log.d(TAG, "No such document");
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+            })
+            .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "get failed with ", e);
+                    Log.d(TAG, "Error getting document: ", e);
                 }
             });
-    }
+}
+
+
+
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
