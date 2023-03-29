@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import static android.content.ContentValues.TAG;
+import static com.google.common.reflect.Reflection.initialize;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +106,6 @@ private void attachComponents(){
                         passwordTextView.setText(password);
                         usernameTextView.setText(username);
                         usertypeTextView.setText(usertype);
-                        // use the userMap object as needed
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -116,6 +117,7 @@ private void attachComponents(){
                     Log.d(TAG, "Error getting document: ", e);
                 }
             });
+
 }
 
 
@@ -160,6 +162,11 @@ private void attachComponents(){
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        initialize();
     }
 
     @Override
