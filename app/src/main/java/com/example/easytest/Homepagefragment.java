@@ -1,5 +1,6 @@
 package com.example.easytest;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +16,30 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Homepagefragment extends Fragment {
+private Button signs,questions;
+View objectHome;
+public void attachcomponents()
+{
+    signs=objectHome.findViewById(R.id.btnsigns);
+    questions=objectHome.findViewById(R.id.btnquestions);
+    signs.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent myIntent = new Intent(getContext(), SignsActivity.class);
+            getContext().startActivity(myIntent);
+
+        }
+    });
+    questions.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent myIntent = new Intent(getContext(), QuizActivity.class);
+            getContext().startActivity(myIntent);
+
+        }
+    });
+
+    }
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +84,9 @@ public class Homepagefragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_homepagefragment, container, false);
+        objectHome=inflater.inflate(R.layout.fragment_homepagefragment,container,false);
+        attachcomponents();
+
+        return objectHome;
     }
 }
