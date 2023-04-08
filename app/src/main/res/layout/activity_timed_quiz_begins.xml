@@ -40,7 +40,7 @@
             android:textSize="37sp" />
 
         <TextView
-    android:id="@+id/TextQuestion"
+    android:id="@+id/textQuestion"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="question will be here.."
