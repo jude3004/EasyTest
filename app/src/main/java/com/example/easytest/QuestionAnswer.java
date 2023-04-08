@@ -15,7 +15,7 @@ public class QuestionAnswer {
             {"16.6 years","17.5 years","17 years","16.75 years"}
     };
     public static String correctAnswers[]={
-"a forbidding sign",
+            "a forbidding sign",
             "50 KM/H",
             "from the right",
             "16.75 years"

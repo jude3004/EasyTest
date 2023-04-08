@@ -28,27 +28,36 @@
         android:id="@+id/choices_layout"
         android:layout_centerInParent="true"
         android:orientation="vertical">
+
         <Button
+            android:id="@+id/ans_A"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ans A"
-            android:id="@+id/ans_A"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:text="Ans A" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ans B"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/ans_B"
             android:layout_margin="5dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ans C"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/ans_C"
             android:layout_margin="5dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:text="Ans D"
             android:id="@+id/ans_D"
             android:layout_margin="5dp"/>
