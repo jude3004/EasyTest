@@ -76,6 +76,7 @@ ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
         loadNewQuestion();
     }
 
+
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View view) {

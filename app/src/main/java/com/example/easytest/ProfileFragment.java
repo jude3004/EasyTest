@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,51 +58,60 @@ private void attachComponents(){
             FirebaseUser currentUser = mAuth.getCurrentUser();
 
             if (currentUser != null) {
-                currentUser.delete()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful())
-                                    Log.d(TAG, "User account deleted.");
-                                 else
-                                    Log.e(TAG, "Error deleting user account.", task.getException());
-                            }
-                        });
+                mAuth.signOut();
+                LogInFragment logInFragment = new LogInFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutMain, logInFragment, logInFragment.getTag())
+                        .commit();
+            } else {
+                // handle case where there is no currently signed-in user
+                Toast.makeText(getContext(), "No user is currently signed in", Toast.LENGTH_SHORT).show();
             }
+
         }
     });
     del.setOnClickListener(new View.OnClickListener() {
 
         @Override
         public void onClick(View view) {
-            LogInFragment logInFragment = new LogInFragment();
-            FragmentManager manager = getFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.frameLayoutMain, logInFragment, logInFragment.getTag())
-                    .commit();
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
 
-            if (currentUser != null)
-                mAuth.signOut();
+            if (currentUser != null) {
+                currentUser.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful())
+                                    Log.d(TAG, "User account deleted.");
+                                else
+                                    Log.e(TAG, "Error deleting user account.", task.getException());
+                            }
+                        });
+            }
 
         }
     });
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    String userId = auth.getCurrentUser().getUid();
+    if (auth.getCurrentUser() != null) {
+        String userId = auth.getCurrentUser().getUid();
+        DocumentReference userRef = db.collection("users").document(userId);
 
-    db.collection("users").document(userId).get()
-            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        HashMap<String, Object> userMap = (HashMap<String, Object>) documentSnapshot.getData();
-                        String email = (String) userMap.get("email");
-                        String password = (String) userMap.get("password");
-                        String username = (String) userMap.get("username");
-                        String usertype = (String) userMap.get("usertype");
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String email = document.getString("email");
+                        String password = document.getString("password");
+                        String username = document.getString("username");
+                        String usertype = document.getString("usertype");
+
+
                         emailTextView.setText(email);
                         passwordTextView.setText(password);
                         usernameTextView.setText(username);
@@ -109,14 +119,15 @@ private void attachComponents(){
                     } else {
                         Log.d(TAG, "No such document");
                     }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "Error getting document: ", e);
-                }
-            });
+            }
+        });
+    } else {
+        // handle case where there is no currently signed-in user
+        Toast.makeText(getContext(), "No user is currently signed in", Toast.LENGTH_SHORT).show();
+    }
 
 }
 

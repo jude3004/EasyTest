@@ -20,8 +20,9 @@ Button btnstart;
         btnstart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(TimedQuizActivity.this,TimedQuizBegins.class);
+                Intent intent=new Intent(TimedQuizActivity.this,UpdatedTimedQuiz.class);
                 startActivity(intent);
+
             }
         });
     }
