@@ -27,7 +27,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 holder.imageView.setImageResource(arr[position]);
-holder.textView.setText("image NO"+ position);
+holder.textView.setText("image No"+ position);
     }
 
     @Override

@@ -2,10 +2,11 @@ package com.example.easytest;
 
 public class QuestionAnswer {
     public static String question[]={
-"a rounded sign usually is:",
+            "a rounded sign usually is:",
             "what is the max allowed speed inside a city",
             "how do you overtake a car? ",
-            "when can a person get a driving license"
+            "when can a person get a driving license",
+
 
     };
     public static String choices[][]={
