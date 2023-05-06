@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -77,32 +78,32 @@ ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
     }
 
 
-    @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View view) {
-        ansA.setBackgroundColor(android.R.color.white);
-        ansB.setBackgroundColor(android.R.color.white);
-        ansC.setBackgroundColor(android.R.color.white);
-        ansD.setBackgroundColor(android.R.color.white);
+        ansA.setBackgroundColor(Color.WHITE);
+        ansB.setBackgroundColor(Color.WHITE);
+        ansC.setBackgroundColor(Color.WHITE);
+        ansD.setBackgroundColor(Color.WHITE);
+        Button clickedButton = (Button) view;
+   if (clickedButton.getId()==R.id.submit_btn){
+       if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])){
+           score++;
 
-Button clickedButton= (Button) view;
-        if (clickedButton.getId()==R.id.submit_btn) {
-            if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
-                score++;
-            }
+       }
+currentQuestionIndex++;
+loadNewQuestion();
 
-            currentQuestionIndex++;
-            loadNewQuestion();
-        }
+   }
+   else {
+       selectedAnswer=clickedButton.getText().toString();
+       clickedButton.setBackgroundColor(Color.BLACK);
+
+   }
+    }
 
 
 
-else {
-selectedAnswer=clickedButton.getText().toString();
-clickedButton.setBackgroundColor(android.R.color.holo_red_dark);
+
 }
 
-}
 
-
-}

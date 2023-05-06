@@ -52,15 +52,17 @@
             android:backgroundTint="@color/white"
             android:textColor="@color/black"
             android:id="@+id/ans_C"
+
             android:layout_margin="5dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/ans_D"
+            android:layout_margin="5dp"
             android:backgroundTint="@color/white"
             android:textColor="@color/black"
             android:text="Ans D"
-            android:id="@+id/ans_D"
-            android:layout_margin="5dp"/>
+     />
 
     </LinearLayout>
 

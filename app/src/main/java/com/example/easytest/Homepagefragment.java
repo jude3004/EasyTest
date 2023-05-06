@@ -16,16 +16,25 @@ import android.widget.Button;
  * create an instance of this fragment.
  */
 public class Homepagefragment extends Fragment {
-private Button signs,questions;
+private Button signs,questions, quiz;
 View objectHome;
 public void attachcomponents()
 {
     signs=objectHome.findViewById(R.id.btnsigns);
     questions=objectHome.findViewById(R.id.btnquestions);
+    quiz=objectHome.findViewById(R.id.quizbtn);
     signs.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent myIntent = new Intent(getContext(), SignsActivity.class);
+            getContext().startActivity(myIntent);
+
+        }
+    });
+    quiz.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent myIntent = new Intent(getContext(), TimedQuizActivity.class);
             getContext().startActivity(myIntent);
 
         }

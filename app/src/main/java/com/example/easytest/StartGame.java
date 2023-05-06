@@ -53,7 +53,7 @@ public class StartGame extends AppCompatActivity {
         techList.add("who has priority 3");
         techList.add("road narrowing from both sides");
         techList.add("steep cliff ahead");
-        techList.add("zi zag road ahead");
+        techList.add("zig zag road ahead");
         techList.add("what lane to transfer to");
         techList.add("what lane to transfer to 2");
         map.put(techList.get(0),R.drawable.highwayahead);

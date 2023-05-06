@@ -37,20 +37,20 @@ public class HomePage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
-                boolean b = true;
+
                 switch (item.getItemId()) {
                     case R.id.settings:
-                        transaction.replace(R.id.FrameLayout, new SettingsFragment());
+                        transaction.replace(R.id.frameLayoutMain, new SettingsFragment());
                         transaction.commit();
-                        return b;
+                        return true;
                     case R.id.profile:
-                        transaction.replace(R.id.FrameLayout, new ProfileFragment());
+                        transaction.replace(R.id.frameLayoutMain, new ProfileFragment());
                         transaction.commit();
-                        return b;
+                        return true;
                     case R.id.home:
                         transaction.replace(R.id.FrameLayout, new Homepagefragment());
                         transaction.commit();
-                        return b;
+                        return true;
                 }
                 return true;
             }
