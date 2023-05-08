@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,46 +12,23 @@ import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Homepagefragment#newInstance} factory method to
+ * Use the {@link TimedQuizFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Homepagefragment extends Fragment {
-private Button signs,questions, quiz;
-View objectHome;
-public void attachcomponents()
-{
-    signs=objectHome.findViewById(R.id.btnsigns);
-    questions=objectHome.findViewById(R.id.btnquestions);
-    quiz=objectHome.findViewById(R.id.quizbtn);
-    signs.setOnClickListener(new View.OnClickListener() {
+public class TimedQuizFragment extends Fragment {
+private View objectTimedQuizFragment;
+private Button start;
+private void attachComponents(){
+
+    start=objectTimedQuizFragment.findViewById(R.id.button);
+    start.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent myIntent = new Intent(getContext(), SignsActivity.class);
+            Intent myIntent = new Intent(getContext(), StartGame.class);
             getContext().startActivity(myIntent);
-
         }
     });
-    quiz.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            TimedQuizFragment timedQuizFragment=new TimedQuizFragment();
-            FragmentManager manager=getFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.frameLayoutMain,timedQuizFragment,timedQuizFragment.getTag())
-                    .commit();
-        }
-    });
-    questions.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent myIntent = new Intent(getContext(), QuizActivity.class);
-            getContext().startActivity(myIntent);
-
-        }
-    });
-
-    }
-
+}
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,7 +38,7 @@ public void attachcomponents()
     private String mParam1;
     private String mParam2;
 
-    public Homepagefragment() {
+    public TimedQuizFragment() {
         // Required empty public constructor
     }
 
@@ -72,11 +48,11 @@ public void attachcomponents()
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Homepagefragment.
+     * @return A new instance of fragment TimedQuizFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Homepagefragment newInstance(String param1, String param2) {
-        Homepagefragment fragment = new Homepagefragment();
+    public static TimedQuizFragment newInstance(String param1, String param2) {
+        TimedQuizFragment fragment = new TimedQuizFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -96,9 +72,9 @@ public void attachcomponents()
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        objectHome=inflater.inflate(R.layout.fragment_homepagefragment,container,false);
-        attachcomponents();
+        objectTimedQuizFragment=inflater.inflate(R.layout.fragment_timed_quiz,container,false);
+        attachComponents();
 
-        return objectHome;
+        return objectTimedQuizFragment;
     }
 }

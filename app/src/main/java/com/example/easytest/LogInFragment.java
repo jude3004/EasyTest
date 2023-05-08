@@ -30,35 +30,32 @@ public class LogInFragment extends Fragment {
 
     private View objectLogInFragment;
     private Button logInBtn;
-    private EditText mailEt,passEt;
+    private EditText mailEt, passEt;
     private FirebaseAuth mAuth;
     private TextView logInToSignUpTxt, forgotpasswordtxt;
 
-    private void attachComponents(){
-        logInBtn=objectLogInFragment.findViewById(R.id.btnLogIn);
-        mailEt=objectLogInFragment.findViewById(R.id.etMailLogIn);
-        passEt=objectLogInFragment.findViewById(R.id.etPassLogIn);
-        logInToSignUpTxt=objectLogInFragment.findViewById(R.id.txtSignUpLogIn);
-        forgotpasswordtxt=objectLogInFragment.findViewById(R.id.txtforgotpasswordlogin);
-        mAuth=FirebaseAuth.getInstance();
+    private void attachComponents() {
+        logInBtn = objectLogInFragment.findViewById(R.id.btnLogIn);
+        mailEt = objectLogInFragment.findViewById(R.id.etMailLogIn);
+        passEt = objectLogInFragment.findViewById(R.id.etPassLogIn);
+        logInToSignUpTxt = objectLogInFragment.findViewById(R.id.txtSignUpLogIn);
+        forgotpasswordtxt = objectLogInFragment.findViewById(R.id.txtforgotpasswordlogin);
+        mAuth = FirebaseAuth.getInstance();
 
         logInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logInUser();
-                Intent myIntent = new Intent(getContext(), HomePage.class);
-                getContext().startActivity(myIntent);
-
             }
         });
 
         logInToSignUpTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SignUpFragment signUpFragment=new SignUpFragment();
-                FragmentManager manager=getFragmentManager();
+                SignUpFragment signUpFragment = new SignUpFragment();
+                FragmentManager manager = getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain,signUpFragment,signUpFragment.getTag())
+                        .replace(R.id.frameLayoutMain, signUpFragment, signUpFragment.getTag())
                         .commit();
             }
         });
@@ -66,10 +63,10 @@ public class LogInFragment extends Fragment {
         forgotpasswordtxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ForgotPasswordFragment forgotpasswordFragment=new ForgotPasswordFragment();
-                FragmentManager manager=getFragmentManager();
+                ForgotPasswordFragment forgotpasswordFragment = new ForgotPasswordFragment();
+                FragmentManager manager = getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain,forgotpasswordFragment,forgotpasswordFragment.getTag())
+                        .replace(R.id.frameLayoutMain, forgotpasswordFragment, forgotpasswordFragment.getTag())
                         .commit();
             }
         });
@@ -120,45 +117,46 @@ public class LogInFragment extends Fragment {
         }
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
         initialize();
     }
-    private void logInUser(){
-        try{
-            if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()){
-                if(mAuth!=null){
-                    mAuth.signInWithEmailAndPassword(mailEt.getText().toString(),passEt.getText().toString())
-                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    Toast.makeText(getContext(), "User signed in successfully.", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
+
+    private void logInUser() {
+
+        if (!mailEt.getText().toString().isEmpty() && !passEt.getText().toString().isEmpty()) {
+            if (mAuth != null) {
+                mAuth.signInWithEmailAndPassword(mailEt.getText().toString(), passEt.getText().toString())
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                Toast.makeText(getContext(), "User signed in successfully.", Toast.LENGTH_SHORT).show();
+                                Intent mainPageActivityIntent = new Intent(getContext(), HomePage.class);
+                                startActivity(mainPageActivityIntent);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
-            else{
-                Toast.makeText(getContext(), "Missing fields identified.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        catch (Exception e){
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Missing fields identified.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        objectLogInFragment=inflater.inflate(R.layout.fragment_log_in,container,false);
+        objectLogInFragment = inflater.inflate(R.layout.fragment_log_in, container, false);
         attachComponents();
 
         return objectLogInFragment;
     }
+
 }
