@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddSignFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/uploadedphoto"
+            android:layout_width="218dp"
+            android:layout_height="221dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="30dp"
+            android:layout_marginStart="139dp"
+            android:layout_marginTop="106dp"
+            android:layout_marginEnd="144dp"
+            android:layout_marginBottom="497dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.633"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.086"
+            tools:src="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/selectimagebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="145dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="83dp"
+            android:layout_marginEnd="146dp"
+            android:layout_marginBottom="112dp"
+            android:text="select image"
+            app:layout_constraintBottom_toTopOf="@+id/uploadimagebtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uploadedphoto" />
+
+        <Button
+            android:id="@+id/uploadimagebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="139dp"
+            android:layout_marginTop="112dp"
+            android:layout_marginEnd="148dp"
+            android:layout_marginBottom="206dp"
+            android:text="upload image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectimagebtn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

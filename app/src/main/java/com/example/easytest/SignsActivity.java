@@ -13,7 +13,7 @@ public class SignsActivity extends AppCompatActivity implements RecyclerViewAdap
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerViewAdapter recyclerViewAdapter;
     private int[] arr = {R.drawable.noentry, R.drawable.noovertake, R.drawable.nouturn, R.drawable.oneway, R.drawable.right, R.drawable.rocks, R.drawable.roundabout, R.drawable.stop, R.drawable.triangle, R.drawable.working};
-    private String[] messages = {"No Entry", "No Overtaking", "No U-Turn", "One Way", "Turn Right", "Rocks Ahead", "Roundabout Ahead", "Stop Sign", "Warning Triangle", "Road Works"};
+    private String[] messages = {"this sign forbids you to enter the road", "you're not allowed to overtake the car ahead", "you cannot do a U-turn here", "this street is a one way, two cars cannot go in the opposite ways", "you only can go right", "beware! some rocks may be falling", "watch out! there is roundabout ahead", "Stop the car! stop and wait for 3 seconds at least", "the priority on the road is for the other cars", "beware! men are working in the road ahead"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
