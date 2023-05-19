@@ -1,19 +1,36 @@
 package com.example.easytest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class SignsActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
-    private RecyclerView recyclerView;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
+
+public class SignsActivity extends AppCompatActivity {
+     RecyclerView recyclerView;
+    FloatingActionButton floatingbutton;
+    FirebaseRecyclerOptions<Sign> options;
+    FirebaseRecyclerAdapter<Sign,RecyclerViewAdapter>adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerViewAdapter recyclerViewAdapter;
-    private int[] arr = {R.drawable.noentry, R.drawable.noovertake, R.drawable.nouturn, R.drawable.oneway, R.drawable.right, R.drawable.rocks, R.drawable.roundabout, R.drawable.stop, R.drawable.triangle, R.drawable.working};
-    private String[] messages = {"this sign forbids you to enter the road", "you're not allowed to overtake the car ahead", "you cannot do a U-turn here", "this street is a one way, two cars cannot go in the opposite ways", "you only can go right", "beware! some rocks may be falling", "watch out! there is roundabout ahead", "Stop the car! stop and wait for 3 seconds at least", "the priority on the road is for the other cars", "beware! men are working in the road ahead"};
+  DatabaseReference Dataref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,28 +42,50 @@ public class SignsActivity extends AppCompatActivity implements RecyclerViewAdap
     private void attachComponents() {
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new GridLayoutManager(this, 2);
+        floatingbutton=findViewById(R.id.floatingbtn);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new RecyclerViewAdapter(arr, messages, this);
-        recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
+        Dataref= FirebaseDatabase.getInstance().getReference().child("Sign");
+        floatingbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.frameLayoutMain, new AddSignFragment());
+                transaction.commit();
+            }
+        });
+        LoadData();
     }
 
+    private void LoadData() {
+options= new FirebaseRecyclerOptions.Builder<Sign>().setQuery(Dataref,Sign.class).build();
+adapter=new FirebaseRecyclerAdapter<Sign, RecyclerViewAdapter>(options) {
     @Override
-    public void onItemClick(int position) {
-        String message = messages[position]; //get the message for the clicked item
-        showDialog(message); //show the customized alert dialog
+    protected void onBindViewHolder(@NonNull RecyclerViewAdapter holder, @SuppressLint("RecyclerView") final int position, @NonNull Sign model) {
+        holder.textView.setText(model.getSignName());
+        Picasso.get().load(model.getImageUrl()).into(holder.imageView);
+        holder.v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), ViewActivity.class);
+                intent.putExtra("SignKey", getRef(position).getKey());
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
-    private void showDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //do nothing
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+
+    @NonNull
+    @Override
+    public RecyclerViewAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view,parent,false);
+        return new RecyclerViewAdapter(v);
     }
+};
+adapter.startListening();
+recyclerView.setAdapter(adapter);
+    }
+
+
 }

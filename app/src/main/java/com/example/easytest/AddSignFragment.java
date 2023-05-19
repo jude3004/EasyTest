@@ -3,6 +3,7 @@ package com.example.easytest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,15 +19,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.easytest.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -40,37 +47,106 @@ import java.util.UUID;
  * create an instance of this fragment.
  */
 public class AddSignFragment extends Fragment {
-    private static final int REQUEST_SELECT_PHOTO = 1;
-    private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 2;
-    private ActivityResultLauncher<String> requestPermissionLauncher;
-
-    private Button select;
+private static final int REQUEST_CODE_IMAGE=101;
     private Button upload;
-
-    private Uri selectedPhotoUri;
+DatabaseReference Dataref;
+StorageReference Storageref;
+private ProgressBar progressBar;
+private TextView textViewProgress;
+private ImageView image;
+private EditText editText;
+Uri imageUri;
+boolean isImageAdded=false;
 
 View objectAddSignFragment;
     private void attachComponents()
     {
-        select=objectAddSignFragment.findViewById(R.id.selectimagebtn);
-        upload=objectAddSignFragment.findViewById(R.id.uploadimagebtn);
+Dataref= FirebaseDatabase.getInstance().getReference().child("Sign");
+        Storageref= FirebaseStorage.getInstance().getReference().child("SignImage");
+
+        upload=objectAddSignFragment.findViewById(R.id.btnUpload);
+        progressBar=objectAddSignFragment.findViewById(R.id.progressbar);
+        textViewProgress=objectAddSignFragment.findViewById(R.id.textProgress);
+        editText=objectAddSignFragment.findViewById(R.id.inputImageName);
+        image=objectAddSignFragment.findViewById(R.id.imageVIewAdd);
+        progressBar.setVisibility(View.GONE);
+        textViewProgress.setVisibility(View.GONE);
 
 
-        select.setOnClickListener(new View.OnClickListener() {
+        image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermissionAndSelectPhoto();
+                Intent intent=new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent,REQUEST_CODE_IMAGE);
             }
         });
-
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadPhotoToFirestore();
+            final String imageName= editText.getText().toString();
+            if (isImageAdded!=false&&imageName!=null){
+                uploadImage(imageName);
+            }
+
+            }
+
+            private void uploadImage(final String imageName) {
+textViewProgress.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+              final  String key=Dataref.push().getKey();
+                Storageref.child(key+"jpg").putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Storageref.child(key+"jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+HashMap hashmap=  new HashMap();
+hashmap.put("SignName", imageName);
+hashmap.put("ImageUrl",uri.toString());
+Dataref.child(key).setValue(hashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
+    @Override
+    public void onSuccess(Void unused) {
+        startActivity(new Intent(getContext(),SignsActivity.class));
+        Toast.makeText(getContext(), "Data successfully uploaded!", Toast.LENGTH_SHORT).show();
+    }
+});
+                            }
+                        });
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+double progress= (taskSnapshot.getBytesTransferred()*100)/taskSnapshot.getTotalByteCount();
+progressBar.setProgress((int) progress);
+textViewProgress.setText(progress+"%");
+                    }
+                });
             }
         });
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+
+            Uri imageUri = data.getData();
+
+
+            image.setImageURI(imageUri);
+
+
+            progressBar.setVisibility(View.VISIBLE);
+            textViewProgress.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -110,104 +186,7 @@ View objectAddSignFragment;
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    private void checkPermissionAndSelectPhoto() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_SELECT_PHOTO);
-        }
 
-
-
-    private void selectPhotoFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_SELECT_PHOTO);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectPhotoFromGallery();
-            } else {
-                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_SELECT_PHOTO && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getData() != null) {
-                selectedPhotoUri = data.getData();
-                requireContext().getContentResolver().takePersistableUriPermission(
-                        selectedPhotoUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                Toast.makeText(requireContext(), "Photo selected", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-    private void uploadPhotoToFirestore() {
-        if (selectedPhotoUri == null) {
-            Toast.makeText(requireContext(), "Please select a photo first", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        String filename = UUID.randomUUID().toString();
-
-        StorageReference photoRef = storageRef.child("photos/" + filename);
-
-        UploadTask uploadTask = photoRef.putFile(selectedPhotoUri);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri downloadUri) {
-                        storeDownloadUrlInFirestore(downloadUri.toString());
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(requireContext(), "Failed to upload photo", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to upload photo", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void storeDownloadUrlInFirestore(String downloadUrl) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Map<String, Object> photoData = new HashMap<>();
-        photoData.put("downloadUrl", downloadUrl);
-
-        db.collection("photos")
-                .add(photoData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(requireContext(), "Photo uploaded successfully", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(requireContext(), "Failed to upload photo", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
     @Override
     public void onStart() {
         super.onStart();

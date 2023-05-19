@@ -9,17 +9,17 @@
  android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
 android:layout_marginTop="20dp"
-    android:id="@+id/imageView"
+    android:id="@+id/reimageView"
     android:src="@drawable/ic_launcher_background"
     />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/retextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:gravity="center"
-        android:text="image NO"
+        android:text="Sign name"
         android:textSize="25dp"
         android:textStyle="bold" />
 

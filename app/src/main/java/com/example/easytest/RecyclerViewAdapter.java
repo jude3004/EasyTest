@@ -1,5 +1,6 @@
 package com.example.easytest;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,57 +10,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-    private int[] mImageIds;
-    private String[] mMessages;
-    private OnItemClickListener mListener;
+import java.util.ArrayList;
+import java.util.List;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
+ class RecyclerViewAdapter extends RecyclerView.ViewHolder {
+     ImageView imageView;
+     TextView textView;
+     View v;
+     public RecyclerViewAdapter(@NonNull View itemView) {
+super(itemView);
+imageView=itemView.findViewById(R.id.reimageView);
+         textView=itemView.findViewById(R.id.retextView);
+         v=itemView;
+     }
 
-    public RecyclerViewAdapter(int[] imageIds, String[] messages, OnItemClickListener listener) {
-        mImageIds = imageIds;
-        mMessages = messages;
-        mListener = listener;
-    }
-
-    @NonNull
-    @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view, parent, false);
-        return new MyViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.imageView.setImageResource(mImageIds[position]);
-        holder.textView.setText(mMessages[position]);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mImageIds.length;
-    }
-
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView imageView;
-        TextView textView;
-
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
-            textView = itemView.findViewById(R.id.textView);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION && mListener != null) {
-                mListener.onItemClick(position);
-            }
-        }
-    }
 }

@@ -1,61 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddSignFragment">
+    tools:context=".AddSignFragment"
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/uploadedphoto"
-            android:layout_width="218dp"
-            android:layout_height="221dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="30dp"
-            android:layout_marginStart="139dp"
-            android:layout_marginTop="106dp"
+            android:id="@+id/imageVIewAdd"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginBottom="28dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/baseline_image_24"
+            app:layout_constraintBottom_toTopOf="@+id/inputImageName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/inputImageName"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="51dp"
+            android:gravity="center"
+            android:text="0.0%"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnUpload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressbar" />
+
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progressbar"
+            android:layout_marginStart="143dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="144dp"
-            android:layout_marginBottom="497dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.633"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.086"
-            tools:src="@tools:sample/avatars" />
-
-        <Button
-            android:id="@+id/selectimagebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="145dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="83dp"
-            android:layout_marginEnd="146dp"
-            android:layout_marginBottom="112dp"
-            android:text="select image"
-            app:layout_constraintBottom_toTopOf="@+id/uploadimagebtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/uploadedphoto" />
-
-        <Button
-            android:id="@+id/uploadimagebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="139dp"
-            android:layout_marginTop="112dp"
-            android:layout_marginEnd="148dp"
-            android:layout_marginBottom="206dp"
+            android:layout_marginBottom="85dp"
             android:text="upload image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/selectimagebtn" />
+            app:layout_constraintTop_toBottomOf="@+id/textProgress" />
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textProgress"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="47dp"
+            app:layout_constraintBottom_toTopOf="@+id/textProgress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputImageName" />
+
+        <EditText
+            android:id="@+id/inputImageName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/imageVIewAdd"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="34dp"
+            android:hint="enter name here..."
+            app:layout_constraintBottom_toTopOf="@+id/progressbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageVIewAdd" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</LinearLayout>
