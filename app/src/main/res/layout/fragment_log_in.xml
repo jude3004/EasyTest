@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInFragment">
+    tools:context=".UserManagement.LogInFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,10 +38,10 @@
             android:layout_marginEnd="92dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/shape"
+            android:textColorHint="@color/white"
             android:ems="10"
             android:hint="Enter your email..."
             android:inputType="textEmailAddress"
-            android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/etPassLogIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

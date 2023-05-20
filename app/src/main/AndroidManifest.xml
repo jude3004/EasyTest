@@ -16,19 +16,19 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
         tools:targetApi="31">
         <activity
-            android:name=".ViewActivity"
+            android:name=".Activities.ViewActivity"
             android:exported="false" />
         <activity
-            android:name=".SignsActivity"
+            android:name=".Activities.SignsActivity"
             android:exported="false" />
         <activity
-            android:name=".QuizActivity"
+            android:name=".Activities.QuizActivity"
             android:exported="false" />
         <activity
-            android:name=".HomePage"
+            android:name=".Activities.HomePage"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

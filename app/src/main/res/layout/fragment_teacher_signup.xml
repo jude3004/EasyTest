@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TeacherSignupFragment">
+    tools:context=".Fragments.TeacherSignupFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#282634">
 
         <Button
             android:id="@+id/signupbtn"
@@ -28,10 +28,12 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/namete"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="70dp"
+            android:background="@drawable/shape"
+            android:textColorHint="@color/white"
             android:layout_marginTop="121dp"
             android:layout_marginEnd="131dp"
             android:layout_marginBottom="36dp"
@@ -46,7 +48,9 @@
         <EditText
             android:id="@+id/cartype"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/shape"
+            android:textColorHint="@color/white"
             android:layout_marginStart="60dp"
             android:layout_marginTop="36dp"
             android:layout_marginEnd="142dp"
@@ -57,13 +61,15 @@
             app:layout_constraintBottom_toTopOf="@+id/cartest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+            app:layout_constraintTop_toBottomOf="@+id/namete" />
 
         <EditText
             android:id="@+id/cartest"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="66dp"
+            android:background="@drawable/shape"
+            android:textColorHint="@color/white"
             android:layout_marginTop="44dp"
             android:layout_marginEnd="136dp"
             android:layout_marginBottom="41dp"
@@ -79,9 +85,11 @@
         <EditText
             android:id="@+id/studentsnum"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="59dp"
             android:layout_marginTop="10dp"
+            android:background="@drawable/shape"
+            android:textColorHint="@color/white"
             android:layout_marginEnd="143dp"
             android:layout_marginBottom="51dp"
             android:ems="10"
@@ -95,14 +103,16 @@
         <EditText
             android:id="@+id/ID"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="49dp"
             android:layout_marginTop="36dp"
             android:layout_marginEnd="152dp"
             android:layout_marginBottom="25dp"
+            android:background="@drawable/shape"
             android:ems="10"
-            android:hint="id"
+            android:hint="     id"
             android:inputType="textPersonName"
+            android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/cartest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
