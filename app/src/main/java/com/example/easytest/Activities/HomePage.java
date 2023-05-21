@@ -3,16 +3,22 @@ package com.example.easytest.Activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.easytest.Classes.PhotoAdapter;
+import com.example.easytest.Fragments.AddSignFragment;
 import com.example.easytest.Fragments.Homepagefragment;
 import com.example.easytest.Fragments.StudentProfileFragment;
 import com.example.easytest.Fragments.TeacherProfileFragment;
 import com.example.easytest.R;
+import com.example.easytest.UserManagement.ForgotPasswordFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,23 +38,59 @@ import java.util.HashMap;
 
 public class HomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
+    private RecyclerView recyclerView;
+    private PhotoAdapter adapter;
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.FrameLayout, new Homepagefragment());
-        transaction.commit();
         attachComponents();
+        checkUserType();
+    }
+
+    private void checkUserType() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = null;
+        if (firebaseUser != null) {
+            userId = firebaseUser.getUid();
+        }
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        DocumentReference userRef = firestore.collection("User").document(userId);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String userType = documentSnapshot.getString("Usertype");
+                    if (userType != null) {
+                        if (userType.equals("Teacher")) {
+                            flag = true;
+                        } else if (userType.equals("Student")) {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Missing fields identified.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void attachComponents() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView1);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
+        adapter = new PhotoAdapter(photos, this);
+        recyclerView.setAdapter(adapter);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 FragmentManager fm = getSupportFragmentManager();
@@ -56,41 +98,14 @@ public class HomePage extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.profile:
-                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        String userId = null;
-                        if (firebaseUser != null) {
-                            userId = firebaseUser.getUid();
+                        if (flag) {
+                            transaction.replace(R.id.homepageactive, new TeacherProfileFragment());
+                        } else {
+                            transaction.replace(R.id.homepageactive, new StudentProfileFragment());
                         }
-
-                        // Fetch the user data from Firestore and retrieve the Usertype field
-                        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                        DocumentReference userRef = firestore.collection("User").document(userId);
-                        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                if (documentSnapshot.exists()) {
-                                    String userType = documentSnapshot.getString("Usertype");
-                                    if (userType != null) {
-                                        if (userType.equals("Teacher")) {
-                                            // User is a teacher, navigate to TeacherProfileFragment
-                                            transaction.replace(R.id.teacherfragprof, new TeacherProfileFragment());
-                                        } else if (userType.equals("Student")) {
-                                            // User is a student, navigate to StudentProfileFragment
-                                            transaction.replace(R.id.studentfragprof, new StudentProfileFragment());
-                                        }
-                                        transaction.commit();
-                                    }
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Handle failure to fetch user data from Firestore
-                            }
-                        });
-                        return true;
+                        break;
                     case R.id.home:
-                        transaction.replace(R.id.homepagefrag, new Homepagefragment());
+                        transaction.replace(R.id.homepageactive, new Homepagefragment());
                         break;
                 }
 

@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.easytest.Activities.HomePage;
 import com.example.easytest.Activities.QuizActivity;
 import com.example.easytest.Activities.SignsActivity;
 import com.example.easytest.Activities.StartGame;
@@ -25,12 +27,10 @@ import com.example.easytest.UserManagement.SignUpFragment;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
     private int[] photos;
     private Context context;
-    private FragmentManager fragmentManager;
 
-    public PhotoAdapter(int[] photos, Context context,FragmentManager fragmentManager) {
+    public PhotoAdapter(int[] photos, Context context) {
         this.photos = photos;
         this.context = context;
-        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -48,7 +48,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         return new PhotoViewHolder(itemView);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, @SuppressLint("RecyclerView") int position) {
         int photoResId1 = photos[position * 2];
@@ -63,15 +62,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
                 switch (clickedImageIndex) {
                     case 0:
-                        // Handle click event for photo1
-                        Intent signsIntent = new Intent(context, SignsActivity.class);
-                        context.startActivity(signsIntent);
+                        // Handle click event for photo1 leading to an activity
+                        Intent intent = new Intent(context, SignsActivity.class);
+                        context.startActivity(intent);
                         break;
                     case 2:
-                        // Handle click event for photo3
-                        TimedQuizFragment timedQuizFragment = new TimedQuizFragment();
+                        // Handle click event for photo3 leading to a fragment
+                        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                         fragmentManager.beginTransaction()
-                                .replace(R.id.frameLayouttimedquiz, timedQuizFragment, timedQuizFragment.getTag())
+                                .replace(R.id.homepageactive, new TimedQuizFragment())
                                 .commit();
                         break;
                     default:
@@ -88,16 +87,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
                 switch (clickedImageIndex) {
                     case 1:
-                        // Handle click event for photo2
-                        AddSignFragment addSignFragment = new AddSignFragment();
+                        // Handle click event for photo2 leading to a fragment
+                        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                         fragmentManager.beginTransaction()
-                                .replace(R.id.framelayoutAddsigns, addSignFragment, addSignFragment.getTag())
+                                .replace(R.id.homepageactive, new AddSignFragment())
                                 .commit();
                         break;
                     case 3:
-                        // Handle click event for photo4
-                        Intent questionsIntent = new Intent(context, QuizActivity.class);
-                        context.startActivity(questionsIntent);
+                        // Handle click event for photo4 leading to an activity
+                        Intent intent = new Intent(context, QuizActivity.class);
+                        context.startActivity(intent);
                         break;
                     default:
                         // For other positions, you can handle the click event as needed
@@ -107,14 +106,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         });
     }
 
-
-
     @Override
     public int getItemCount() {
         return (int) Math.ceil(photos.length / 2.0);
     }
 
-    public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PhotoViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView1;
         ImageView imageView2;
 
@@ -122,17 +119,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
             super(itemView);
             imageView1 = itemView.findViewById(R.id.Image1re);
             imageView2 = itemView.findViewById(R.id.Image2re);
-
-
-            imageView1.setOnClickListener(this);
-            imageView2.setOnClickListener(this);
-        }
-
-
-        @Override
-        public void onClick(View view) {
-
         }
     }
 }
-

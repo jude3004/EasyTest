@@ -6,17 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".Activities.HomePage">
 
-    <FrameLayout
-        android:id="@+id/FrameLayout"
+    <LinearLayout
+        android:id="@+id/homepageactive"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#282634"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView1"
@@ -27,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FrameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/homepageactive"
         app:menu="@menu/bottom_nav_menu" />
 
 

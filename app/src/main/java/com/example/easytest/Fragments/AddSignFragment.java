@@ -1,5 +1,7 @@
 package com.example.easytest.Fragments;
 
+import static com.google.common.reflect.Reflection.initialize;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -81,44 +83,44 @@ public class AddSignFragment extends Fragment {
                     uploadImage(imageName);
                 }
             }
-
-            private void uploadImage(final String imageName) {
-                textViewProgress.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-                final String key = firestore.collection("Sign").document().getId();
-                storageRef.child(key + ".jpg").putFile(imageUri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                storageRef.child(key + ".jpg").getDownloadUrl()
-                                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                Map<String, Object> data = new HashMap<>();
-                                                data.put("SignName", imageName);
-                                                data.put("ImageUrl", uri.toString());
-                                                firestore.collection("Sign").document(key)
-                                                        .set(data)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                startActivity(new Intent(getContext(), SignsActivity.class));
-                                                                Toast.makeText(getContext(), "Data successfully uploaded!", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        });
-                                            }
-                                        });
-                            }
-                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (taskSnapshot.getBytesTransferred() * 100) / taskSnapshot.getTotalByteCount();
-                                progressBar.setProgress((int) progress);
-                                textViewProgress.setText(progress + "%");
-                            }
-                        });
-            }
         });
+    }
+
+    private void uploadImage(final String imageName) {
+        textViewProgress.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        final String key = firestore.collection("SignImages").document().getId();
+        storageRef.child(key + ".jpg").putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageRef.child(key + ".png").getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Map<String, Object> data = new HashMap<>();
+                                        data.put("SignName", imageName);
+                                        data.put("ImageUrl", uri.toString());
+                                        firestore.collection("SignImages").document(key)
+                                                .set(data)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        startActivity(new Intent(getContext(), SignsActivity.class));
+                                                        Toast.makeText(getContext(), "Data successfully uploaded!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                });
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (taskSnapshot.getBytesTransferred() * 100) / taskSnapshot.getTotalByteCount();
+                        progressBar.setProgress((int) progress);
+                        textViewProgress.setText(progress + "%");
+                    }
+                });
     }
 
     @Override
@@ -132,11 +134,6 @@ public class AddSignFragment extends Fragment {
             textViewProgress.setVisibility(View.VISIBLE);
         }
     }
-
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -154,8 +151,10 @@ public class AddSignFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AddSignFragment.
+     * @return A new instance of fragment LogInPage.
      */
+    // Rest of the code...
+
     // TODO: Rename and change types and number of parameters
     public static AddSignFragment newInstance(String param1, String param2) {
         AddSignFragment fragment = new AddSignFragment();
@@ -173,13 +172,13 @@ public class AddSignFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    }
 
+    }
     @Override
     public void onStart() {
         super.onStart();
+        initialize();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -189,6 +188,4 @@ public class AddSignFragment extends Fragment {
         return objectAddSignFragment;
     }
 }
-
-
 

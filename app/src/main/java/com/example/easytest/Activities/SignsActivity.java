@@ -18,21 +18,21 @@ import com.example.easytest.Classes.RecyclerViewAdapter;
 import com.example.easytest.Classes.Sign;
 import com.example.easytest.Fragments.AddSignFragment;
 import com.example.easytest.R;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
 public class SignsActivity extends AppCompatActivity {
-     RecyclerView recyclerView;
+    RecyclerView recyclerView;
     FloatingActionButton floatingbutton;
-    FirebaseRecyclerOptions<Sign> options;
-    FirebaseRecyclerAdapter<Sign, RecyclerViewAdapter>adapter;
+    FirestoreRecyclerOptions<Sign> options;
+    FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter> adapter;
     private RecyclerView.LayoutManager layoutManager;
-  DatabaseReference Dataref;
-
+    CollectionReference collectionRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,11 @@ public class SignsActivity extends AppCompatActivity {
     private void attachComponents() {
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new GridLayoutManager(this, 2);
-        floatingbutton=findViewById(R.id.floatingbtn);
+        floatingbutton = findViewById(R.id.floatingbtn);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        Dataref= FirebaseDatabase.getInstance().getReference().child("Sign");
+        collectionRef = FirebaseFirestore.getInstance().collection("Signs");
+
         floatingbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,37 +58,44 @@ public class SignsActivity extends AppCompatActivity {
                 transaction.commit();
             }
         });
+
         LoadData();
     }
 
     private void LoadData() {
-options= new FirebaseRecyclerOptions.Builder<Sign>().setQuery(Dataref,Sign.class).build();
-adapter=new FirebaseRecyclerAdapter<Sign, RecyclerViewAdapter>(options) {
-    @Override
-    protected void onBindViewHolder(@NonNull RecyclerViewAdapter holder, @SuppressLint("RecyclerView") final int position, @NonNull Sign model) {
-        holder.textView.setText(model.getSignName());
-        Picasso.get().load(model.getImageUrl()).into(holder.imageView);
-        holder.v.setOnClickListener(new View.OnClickListener() {
+        Query query = collectionRef.orderBy("SignName", Query.Direction.ASCENDING);
+        options = new FirestoreRecyclerOptions.Builder<Sign>()
+                .setQuery(query, Sign.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter>(options) {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), ViewActivity.class);
-                intent.putExtra("SignKey", getRef(position).getKey());
-                view.getContext().startActivity(intent);
+            protected void onBindViewHolder(@NonNull RecyclerViewAdapter holder, int position, @NonNull Sign model) {
+                holder.textView.setText(model.getSignName());
+                Picasso.get().load(model.getImageUrl()).into(holder.imageView);
+                holder.v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int adapterPosition = holder.getAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            Intent intent = new Intent(view.getContext(), ViewActivity.class);
+                            intent.putExtra("SignKey", getSnapshots().getSnapshot(adapterPosition).getId());
+                            view.getContext().startActivity(intent);
+                        }
+                    }
+                });
             }
-        });
+
+
+            @NonNull
+            @Override
+            public RecyclerViewAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view, parent, false);
+                return new RecyclerViewAdapter(v);
+            }
+        };
+
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
     }
-
-
-    @NonNull
-    @Override
-    public RecyclerViewAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view,parent,false);
-        return new RecyclerViewAdapter(v);
-    }
-};
-adapter.startListening();
-recyclerView.setAdapter(adapter);
-    }
-
-
 }
