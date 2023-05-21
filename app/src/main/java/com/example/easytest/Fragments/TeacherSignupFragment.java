@@ -3,6 +3,9 @@ package com.example.easytest.Fragments;
 import static android.content.ContentValues.TAG;
 import static com.google.common.reflect.Reflection.initialize;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,19 +40,21 @@ public class TeacherSignupFragment extends Fragment {
     private Button signupbutton;
     private FirebaseFirestore db;
       View objectteachersignup;
-
     private EditText name, car_type, experitaion_date, no_students,id;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+    private String email;
+    private SharedPreferences sharedPreferences;
+
     private void attachComponents(){
 
         signupbutton=objectteachersignup.findViewById(R.id.signupbtn);
         db= FirebaseFirestore.getInstance();
         name=objectteachersignup.findViewById(R.id.namete);
         car_type=objectteachersignup.findViewById(R.id.cartype);
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         experitaion_date=objectteachersignup.findViewById(R.id.cartest);
         no_students=objectteachersignup.findViewById(R.id.studentsnum);
         id=objectteachersignup.findViewById(R.id.ID);
+
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,6 +67,7 @@ public class TeacherSignupFragment extends Fragment {
             }
         });
     }
+    @SuppressLint("SuspiciousIndentation")
     public void addUserToFirestore() {
         Map<String, Object> Teacher = new HashMap<>();
         String Name= name.getText().toString();
@@ -74,10 +80,8 @@ public class TeacherSignupFragment extends Fragment {
         Teacher.put("expiration date", expire);
         Teacher.put("number of students", noofstu);
         Teacher.put("ID", teacherID);
-        if (currentUser != null) {
-            String email = currentUser.getEmail();
+        email = sharedPreferences.getString("email", "");
             Teacher.put("Email", email);
-        }
         db.collection("Teacher")
                 .add(Teacher)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

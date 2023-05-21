@@ -3,6 +3,9 @@ package com.example.easytest.Fragments;
 import static android.content.ContentValues.TAG;
 import static com.google.common.reflect.Reflection.initialize;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -39,14 +42,16 @@ public class StudentSignupFragment extends Fragment {
     private FirebaseFirestore db;
     private Button signupbutton;
     private EditText name, ID, teacher_name, area;
+    private String email;
     private RadioGroup radioGroup;
     private RadioButton yes,no;
      View objectstudentsignup;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+    private SharedPreferences sharedPreferences;
+
     private void attachComponents(){
         signupbutton=objectstudentsignup.findViewById(R.id.signupbtn2);
         db=FirebaseFirestore.getInstance();
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         name=objectstudentsignup.findViewById(R.id.nameet);
         ID=objectstudentsignup.findViewById(R.id.stuID);
         teacher_name=objectstudentsignup.findViewById(R.id.teacher);
@@ -67,6 +72,7 @@ public class StudentSignupFragment extends Fragment {
             }
         });
     }
+    @SuppressLint("SuspiciousIndentation")
     public void addUserToFirestore() {
         Map<String, Object> Student = new HashMap<>();
         String Name= name.getText().toString();
@@ -77,10 +83,9 @@ public class StudentSignupFragment extends Fragment {
         Student.put("Birthday", Birthday);
         Student.put("Teacher", Teacher);
         Student.put("Area", Area);
-        if (currentUser != null) {
-            String email = currentUser.getEmail();
+        email = sharedPreferences.getString("email", "");
             Student.put("Email", email);
-        }
+
         if (yes.isChecked())
             Student.put("does the student have teyoria?", "yes");
         if (no.isChecked())

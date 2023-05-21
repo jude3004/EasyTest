@@ -33,7 +33,7 @@ public void attachcomponents()
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
     int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
-    adapter = new PhotoAdapter(photos, getActivity());
+    adapter = new PhotoAdapter(photos, getActivity(),getFragmentManager());
     recyclerView.setAdapter(adapter);
 
     }

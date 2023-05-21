@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#282634"
+    android:id="@+id/teacherfragprof"
     tools:context=".Fragments.TeacherProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

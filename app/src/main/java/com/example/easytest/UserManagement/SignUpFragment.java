@@ -3,6 +3,8 @@ package com.example.easytest.UserManagement;
 import static android.content.ContentValues.TAG;
 import static com.google.common.reflect.Reflection.initialize;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,11 +55,15 @@ public class SignUpFragment extends Fragment {
     private FirebaseFirestore db;
     private RadioGroup radioGroup;
     private boolean worked ;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
 
 
     private void attachComponents() {
         signUpBtn = objectSignUpFragment.findViewById(R.id.btnSignUp);
+        sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         db = FirebaseFirestore.getInstance();
         mailEt = objectSignUpFragment.findViewById(R.id.etEmailSignUp);
         passEt = objectSignUpFragment.findViewById(R.id.etPassSignUp);
@@ -88,8 +94,11 @@ public class SignUpFragment extends Fragment {
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
-            }
+                String email = mailEt.getText().toString();
+                editor.putString("email", email);
+                editor.apply();
 
+            }
 
         });
             signUpToLogInTxt.setOnClickListener(new View.OnClickListener() {

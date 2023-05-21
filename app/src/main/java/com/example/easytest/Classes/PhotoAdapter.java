@@ -1,5 +1,6 @@
 package com.example.easytest.Classes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
@@ -10,21 +11,26 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easytest.Activities.QuizActivity;
 import com.example.easytest.Activities.SignsActivity;
 import com.example.easytest.Activities.StartGame;
 import com.example.easytest.Fragments.AddSignFragment;
+import com.example.easytest.Fragments.TimedQuizFragment;
 import com.example.easytest.R;
+import com.example.easytest.UserManagement.SignUpFragment;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
     private int[] photos;
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public PhotoAdapter(int[] photos, Context context) {
+    public PhotoAdapter(int[] photos, Context context,FragmentManager fragmentManager) {
         this.photos = photos;
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -44,12 +50,64 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
 
     @Override
-    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, @SuppressLint("RecyclerView") int position) {
         int photoResId1 = photos[position * 2];
         int photoResId2 = photos[position * 2 + 1];
         holder.imageView1.setImageResource(photoResId1);
         holder.imageView2.setImageResource(photoResId2);
+
+        holder.imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int clickedImageIndex = position * 2;
+
+                switch (clickedImageIndex) {
+                    case 0:
+                        // Handle click event for photo1
+                        Intent signsIntent = new Intent(context, SignsActivity.class);
+                        context.startActivity(signsIntent);
+                        break;
+                    case 2:
+                        // Handle click event for photo3
+                        TimedQuizFragment timedQuizFragment = new TimedQuizFragment();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frameLayouttimedquiz, timedQuizFragment, timedQuizFragment.getTag())
+                                .commit();
+                        break;
+                    default:
+                        // For other positions, you can handle the click event as needed
+                        break;
+                }
+            }
+        });
+
+        holder.imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int clickedImageIndex = position * 2 + 1;
+
+                switch (clickedImageIndex) {
+                    case 1:
+                        // Handle click event for photo2
+                        AddSignFragment addSignFragment = new AddSignFragment();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.framelayoutAddsigns, addSignFragment, addSignFragment.getTag())
+                                .commit();
+                        break;
+                    case 3:
+                        // Handle click event for photo4
+                        Intent questionsIntent = new Intent(context, QuizActivity.class);
+                        context.startActivity(questionsIntent);
+                        break;
+                    default:
+                        // For other positions, you can handle the click event as needed
+                        break;
+                }
+            }
+        });
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -63,40 +121,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView1 = itemView.findViewById(R.id.Image1re);
-            imageView2 = itemView.findViewById(R.id.Image2re
-            );
+            imageView2 = itemView.findViewById(R.id.Image2re);
+
 
             imageView1.setOnClickListener(this);
             imageView2.setOnClickListener(this);
         }
 
+
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition();
-            int clickedImageIndex = position * 2 + view.getId() - R.id.Image1re;
 
-            switch (clickedImageIndex) {
-                case 0:
-                    // Handle click event for photo1
-                    Intent signsIntent = new Intent(context, SignsActivity.class);
-                    context.startActivity(signsIntent);
-                    break;
-                case 1:
-                    // Handle click event for photo2
-                    Fragment addSignsFragment = new AddSignFragment();
-                    // Add code to display the fragment in the desired container
-                    break;
-                case 2:
-                    // Handle click event for photo3
-                    Intent timedQuizIntent = new Intent(context, StartGame.class);
-                    context.startActivity(timedQuizIntent);
-                    break;
-                case 3:
-                    // Handle click event for photo4
-                    Intent questionsIntent = new Intent(context, QuizActivity.class);
-                    context.startActivity(questionsIntent);
-                    break;
-            }
         }
     }
 }
