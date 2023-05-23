@@ -31,7 +31,7 @@ public class SignsActivity extends AppCompatActivity {
     FloatingActionButton floatingbutton;
     FirestoreRecyclerOptions<Sign> options;
     FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter> adapter;
-    private RecyclerView.LayoutManager layoutManager;
+     RecyclerView.LayoutManager layoutManager;
     CollectionReference collectionRef;
 
     @Override
@@ -42,19 +42,19 @@ public class SignsActivity extends AppCompatActivity {
     }
 
     private void attachComponents() {
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerViewsigns);
         layoutManager = new GridLayoutManager(this, 2);
         floatingbutton = findViewById(R.id.floatingbtn);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        collectionRef = FirebaseFirestore.getInstance().collection("Signs");
+        collectionRef = FirebaseFirestore.getInstance().collection("SignImages");
 
         floatingbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.frameLayoutMain, new AddSignFragment());
+                transaction.replace(R.id.Signlayout, new AddSignFragment());
                 transaction.commit();
             }
         });

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.example.easytest.Activities.StartGame;
 import com.example.easytest.Fragments.AddSignFragment;
 import com.example.easytest.Fragments.TimedQuizFragment;
 import com.example.easytest.R;
+import com.example.easytest.UserManagement.LogInFragment;
 import com.example.easytest.UserManagement.SignUpFragment;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
@@ -88,10 +90,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                 switch (clickedImageIndex) {
                     case 1:
                         // Handle click event for photo2 leading to a fragment
-                        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.homepageactive, new AddSignFragment())
-                                .commit();
+                            FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.homepageactive, new AddSignFragment())
+                                    .commit();
                         break;
                     case 3:
                         // Handle click event for photo4 leading to an activity

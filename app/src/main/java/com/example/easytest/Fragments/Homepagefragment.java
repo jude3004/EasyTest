@@ -3,6 +3,8 @@ package com.example.easytest.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +19,7 @@ import com.example.easytest.Activities.QuizActivity;
 import com.example.easytest.Classes.PhotoAdapter;
 import com.example.easytest.R;
 import com.example.easytest.Activities.SignsActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,17 +29,20 @@ import com.example.easytest.Activities.SignsActivity;
 public class Homepagefragment extends Fragment {
     private RecyclerView recyclerView;
     private PhotoAdapter adapter;
-View objectHome;
-public void attachcomponents()
-{
-    recyclerView = objectHome.findViewById(R.id.recyclerView);
-    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    private View objectHome;
+    private BottomNavigationView bottomNavigationView;
+
+private void attatchcomponents(){
+    recyclerView = objectHome.findViewById(R.id.recyclerViewhome);
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
-    adapter = new PhotoAdapter(photos, getActivity());
+    adapter = new PhotoAdapter(photos, requireContext());
     recyclerView.setAdapter(adapter);
 
-    }
+    bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView1);
+    bottomNavigationView.setVisibility(View.VISIBLE);
+}
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,9 +53,7 @@ public void attachcomponents()
     private String mParam1;
     private String mParam2;
 
-    public Homepagefragment() {
-        // Required empty public constructor
-    }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -68,22 +72,36 @@ public void attachcomponents()
         fragment.setArguments(args);
         return fragment;
     }
+    public Homepagefragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        objectHome = view;
+
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        objectHome=inflater.inflate(R.layout.fragment_homepagefragment,container,false);
-        attachcomponents();
-
-        return objectHome;
+    public void onStart() {
+        super.onStart();
+        attatchcomponents();
     }
-}
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_homepagefragment, container, false);
+    }
+
+
+   }

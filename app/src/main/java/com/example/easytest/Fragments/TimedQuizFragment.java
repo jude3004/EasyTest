@@ -20,9 +20,10 @@ import com.example.easytest.R;
  */
 public class TimedQuizFragment extends Fragment {
  View objectTimedQuizFragment;
+
 private Button start;
 private void attachComponents(){
-
+    requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     start=objectTimedQuizFragment.findViewById(R.id.startbutton);
     start.setOnClickListener(new View.OnClickListener() {
         @Override

@@ -8,13 +8,16 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,10 +25,13 @@ import android.widget.Toast;
 
 import com.example.easytest.R;
 import com.example.easytest.Activities.SignsActivity;
+import com.example.easytest.UserManagement.ForgotPasswordFragment;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -39,101 +45,181 @@ import java.util.Map;
  * Use the {@link AddSignFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class AddSignFragment extends Fragment {
     private static final int REQUEST_CODE_IMAGE = 101;
-    private Button upload;
+
+    private Button uploadButton;
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
     private ProgressBar progressBar;
     private TextView textViewProgress;
-    private ImageView image;
+    private ImageView imageView;
     private EditText editText;
     private Uri imageUri;
     private boolean isImageAdded = false;
+private ImageButton arrows;
+    private View rootView;
 
-    View objectAddSignFragment;
-
-    private void attachComponents() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         firestore = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference().child("SignImage");
+    }
 
-        upload = objectAddSignFragment.findViewById(R.id.btnUpload);
-        progressBar = objectAddSignFragment.findViewById(R.id.progressbar);
-        textViewProgress = objectAddSignFragment.findViewById(R.id.textProgress);
-        editText = objectAddSignFragment.findViewById(R.id.inputImageName);
-        image = objectAddSignFragment.findViewById(R.id.imageVIewAdd);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_add_sign, container, false);
+        initializeViews();
+        return rootView;
+    }
+
+    private void initializeViews() {
+        imageView = rootView.findViewById(R.id.imageVIewAdd);
+        editText = rootView.findViewById(R.id.inputImageName);
+        uploadButton = rootView.findViewById(R.id.btnUpload);
+        progressBar = rootView.findViewById(R.id.progressbar);
+        textViewProgress = rootView.findViewById(R.id.textProgress);
+arrows=rootView.findViewById(R.id.arrow);
+arrows.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Homepagefragment homepagefragment = new Homepagefragment();
+        FragmentManager manager = getFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.framelayoutAddsigns, homepagefragment, homepagefragment.getTag())
+                .commit();
+    }
+});
         progressBar.setVisibility(View.GONE);
         textViewProgress.setVisibility(View.GONE);
 
-        image.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE_IMAGE);
+                selectImage();
             }
         });
 
-        upload.setOnClickListener(new View.OnClickListener() {
+        uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String imageName = editText.getText().toString();
-                if (isImageAdded && imageName != null) {
-                    uploadImage(imageName);
-                }
+                uploadImage();
             }
         });
     }
 
-    private void uploadImage(final String imageName) {
-        textViewProgress.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+    private void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+    }
+
+    private void uploadImage() {
+        final String imageName = editText.getText().toString().trim();
+
+        if (!isImageAdded || imageName.isEmpty()) {
+            Toast.makeText(getContext(), "Please select an image and enter a name.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        showUploadProgress();
+
         final String key = firestore.collection("SignImages").document().getId();
-        storageRef.child(key + ".jpg").putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        final StorageReference imageRef = storageRef.child(key + ".png");
+
+        UploadTask uploadTask = imageRef.putFile(imageUri);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        storageRef.child(key + ".png").getDownloadUrl()
-                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        Map<String, Object> data = new HashMap<>();
-                                        data.put("SignName", imageName);
-                                        data.put("ImageUrl", uri.toString());
-                                        firestore.collection("SignImages").document(key)
-                                                .set(data)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        startActivity(new Intent(getContext(), SignsActivity.class));
-                                                        Toast.makeText(getContext(), "Data successfully uploaded!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-                                });
+                    public void onSuccess(Uri uri) {
+                        saveImageDataToFirestore(key, imageName, uri.toString());
                     }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (taskSnapshot.getBytesTransferred() * 100) / taskSnapshot.getTotalByteCount();
-                        progressBar.setProgress((int) progress);
-                        textViewProgress.setText(progress + "%");
+                    public void onFailure(@NonNull Exception e) {
+                        hideUploadProgress();
+                        Toast.makeText(getContext(), "Failed to retrieve download URL: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideUploadProgress();
+                Toast.makeText(getContext(), "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(getActivity(), new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                updateUploadProgress((int) progress);
+            }
+        });
+    }
+
+    private void saveImageDataToFirestore(String key, String imageName, String imageUrl) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("SignName", imageName);
+        data.put("ImageUrl", imageUrl);
+
+        firestore.collection("SignImages").document(key)
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getContext(), "Data successfully uploaded!", Toast.LENGTH_SHORT).show();
+                        resetUploadForm();
+                        startActivity(new Intent(getContext(), SignsActivity.class));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        hideUploadProgress();
+                        Toast.makeText(getContext(), "Failed to save data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void showUploadProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        textViewProgress.setVisibility(View.VISIBLE);
+        uploadButton.setEnabled(false);
+    }
+
+    private void hideUploadProgress() {
+        progressBar.setVisibility(View.GONE);
+        textViewProgress.setVisibility(View.GONE);
+        uploadButton.setEnabled(true);
+    }
+
+    private void updateUploadProgress(int progress) {
+        progressBar.setProgress(progress);
+        textViewProgress.setText(progress + "%");
+    }
+
+    private void resetUploadForm() {
+        editText.setText("");
+        isImageAdded = false;
+        hideUploadProgress();
+    }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             imageUri = data.getData();
-            image.setImageURI(imageUri);
-            progressBar.setVisibility(View.VISIBLE);
-            textViewProgress.setVisibility(View.VISIBLE);
+            imageView.setImageURI(imageUri);
+            isImageAdded = true;
         }
     }
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -165,27 +251,12 @@ public class AddSignFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
-    }
     @Override
     public void onStart() {
         super.onStart();
-        initialize();
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        objectAddSignFragment = inflater.inflate(R.layout.fragment_add_sign, container, false);
-        attachComponents();
 
-        return objectAddSignFragment;
     }
+
 }
 

@@ -3,6 +3,7 @@ package com.example.easytest.Activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,16 +39,21 @@ import java.util.HashMap;
 
 public class HomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
-    private RecyclerView recyclerView;
-    private PhotoAdapter adapter;
     private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        attachComponents();
+        Homepagefragment homepagefragment = new Homepagefragment();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.homepageactive, homepagefragment, homepagefragment.getTag())
+                .commit();
         checkUserType();
+        attachComponents();
+
+
     }
 
     private void checkUserType() {
@@ -83,12 +89,7 @@ public class HomePage extends AppCompatActivity {
 
     private void attachComponents() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView1);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
-        adapter = new PhotoAdapter(photos, this);
-        recyclerView.setAdapter(adapter);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -112,6 +113,7 @@ public class HomePage extends AppCompatActivity {
                 transaction.commit();
                 return true;
             }
+
         });
     }
 }
