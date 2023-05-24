@@ -3,6 +3,7 @@ package com.example.easytest.Fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,9 +23,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -34,7 +38,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * create an instance of this fragment.
  */
 public class TeacherProfileFragment extends Fragment {
-    private View objectTeacherProfileFragment;
+     View objectTeacherProfileFragment;
     private FirebaseAuth mAuth;
     private BottomNavigationView bottomNavigationView;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -42,21 +46,6 @@ public class TeacherProfileFragment extends Fragment {
     private CollectionReference userCollectionRef = firestore.collection("User");
     private FirebaseUser currentUser;
     private Button signout;
-
-    public TeacherProfileFragment() {
-        // Required empty public constructor
-    }
-
-    public static TeacherProfileFragment newInstance() {
-        TeacherProfileFragment fragment = new TeacherProfileFragment();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     private void attachComponents() {
         final TextView email = objectTeacherProfileFragment.findViewById(R.id.emaildetail);
         final TextView id = objectTeacherProfileFragment.findViewById(R.id.iddetail);
@@ -87,36 +76,27 @@ public class TeacherProfileFragment extends Fragment {
                         // Query to fetch the teacher with the matching email
                         Query teacherQuery = teacherCollectionRef.whereEqualTo("Email", userEmail);
 
-                        teacherQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        teacherQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
                             @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                if (!queryDocumentSnapshots.isEmpty()) {
-                                    // Retrieve the teacher document
-                                    DocumentSnapshot teacherDocument = queryDocumentSnapshots.getDocuments().get(0);
+                            public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                if (!documentSnapshots.isEmpty()) {
+                                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                        String teacherId = doc.getDocument().getString("ID");
+                                        String teacherName = doc.getDocument().getString("Name");
+                                        String teacherEmail = doc.getDocument().getString("Email");
+                                        String carType = doc.getDocument().getString("Cartype");
 
-                                    // Get the teacher data
-                                    String teacherId = teacherDocument.getString("ID");
-                                    String teacherName = teacherDocument.getString("Name");
-                                    String teacherEmail = teacherDocument.getString("Email");
-                                    String carType = teacherDocument.getString("Cartype");
-
-                                    // Update the TextViews with the teacher data
-                                    id.setText(teacherId);
-                                    name.setText(teacherName);
-                                    email.setText(teacherEmail);
-                                    cartype.setText(carType);
-                                } else {
+                                        // Update the TextViews with the teacher data
+                                        id.setText(teacherId);
+                                        name.setText(teacherName);
+                                        email.setText(teacherEmail);
+                                        cartype.setText(carType);
+                                    }
+                                } else
                                     Toast.makeText(getContext(), "Error fetching teacher data!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Error fetching teacher data!", Toast.LENGTH_SHORT).show();
+
                             }
                         });
-                    } else {
-                        Toast.makeText(getContext(), "Error fetching user data!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -133,15 +113,60 @@ public class TeacherProfileFragment extends Fragment {
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call signOut() to sign out the user
-                mAuth.signOut();
-                LogInFragment logInFragment = new LogInFragment();
-                FragmentManager manager = getFragmentManager();
-                manager.beginTransaction()
-                        .replace(R.id.teacherfragprof, logInFragment, logInFragment.getTag())
-                        .commit();
+                Signout();
+
+
             }
         });
+    }
+    private void Signout(){
+        mAuth.signOut();
+        LogInFragment logInFragment = new LogInFragment();
+        FragmentManager manager = getFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.teacherfragprof, logInFragment, logInFragment.getTag())
+                .commit();
+    }
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public TeacherProfileFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment StudentsignupFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static TeacherProfileFragment newInstance(String param1, String param2) {
+        TeacherProfileFragment fragment = new TeacherProfileFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

@@ -4,46 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#282634"
     tools:context=".Fragments.TeacherSignupFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#282634">
-
-        <Button
-            android:id="@+id/signupbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="163dp"
-            android:layout_marginTop="510dp"
-            android:layout_marginEnd="154dp"
-            android:layout_marginBottom="173dp"
-            android:text="signup"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/namete"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="70dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginTop="121dp"
-            android:layout_marginEnd="131dp"
-            android:layout_marginBottom="36dp"
             android:ems="10"
             android:hint="name"
             android:inputType="textPersonName"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/cartype"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/cartype"
@@ -51,71 +34,80 @@
             android:layout_height="48dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="142dp"
-            android:layout_marginBottom="62dp"
             android:ems="10"
             android:hint="car type"
             android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@+id/namete"
             app:layout_constraintBottom_toTopOf="@+id/cartest"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/namete" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/cartest"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="66dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginTop="44dp"
-            android:layout_marginEnd="136dp"
-            android:layout_marginBottom="41dp"
             android:ems="10"
             android:hint="car test expiration date"
             android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@+id/cartype"
             app:layout_constraintBottom_toTopOf="@+id/studentsnum"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cartype" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/studentsnum"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="59dp"
-            android:layout_marginTop="10dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginEnd="143dp"
-            android:layout_marginBottom="51dp"
             android:ems="10"
             android:hint="number of students"
             android:inputType="textPersonName"
-            app:layout_constraintBottom_toTopOf="@+id/signupbtn"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cartest"
+            app:layout_constraintBottom_toTopOf="@+id/ID"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cartest" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
         <EditText
             android:id="@+id/ID"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="49dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="152dp"
-            android:layout_marginBottom="25dp"
             android:background="@drawable/shape"
-            android:ems="10"
-            android:hint="     id"
-            android:inputType="textPersonName"
             android:textColorHint="@color/white"
-            app:layout_constraintBottom_toTopOf="@+id/cartest"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:ems="10"
+            android:hint="ID"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@+id/studentsnum"
+            app:layout_constraintBottom_toTopOf="@+id/signupbtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cartype" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
+
+
+        <Button
+            android:id="@+id/signupbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="signup"
+            app:layout_constraintTop_toBottomOf="@+id/ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

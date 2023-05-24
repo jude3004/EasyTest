@@ -27,12 +27,10 @@ import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
 public class SignsActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
-    FloatingActionButton floatingbutton;
-    FirestoreRecyclerOptions<Sign> options;
-    FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter> adapter;
-     RecyclerView.LayoutManager layoutManager;
-    CollectionReference collectionRef;
+    private RecyclerView recyclerView;
+    private FloatingActionButton floatingButton;
+    private FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter.ViewHolder> adapter;
+    private CollectionReference collectionRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +41,18 @@ public class SignsActivity extends AppCompatActivity {
 
     private void attachComponents() {
         recyclerView = findViewById(R.id.recyclerViewsigns);
-        layoutManager = new GridLayoutManager(this, 2);
-        floatingbutton = findViewById(R.id.floatingbtn);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
+        floatingButton = findViewById(R.id.floatingbtn);
         collectionRef = FirebaseFirestore.getInstance().collection("SignImages");
 
-        floatingbutton.setOnClickListener(new View.OnClickListener() {
+        // Define and set the layout manager
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+
+
+    floatingButton = findViewById(R.id.floatingbtn);
+        floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getSupportFragmentManager();
@@ -64,38 +67,42 @@ public class SignsActivity extends AppCompatActivity {
 
     private void LoadData() {
         Query query = collectionRef.orderBy("SignName", Query.Direction.ASCENDING);
-        options = new FirestoreRecyclerOptions.Builder<Sign>()
+        FirestoreRecyclerOptions<Sign> options = new FirestoreRecyclerOptions.Builder<Sign>()
                 .setQuery(query, Sign.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull RecyclerViewAdapter holder, int position, @NonNull Sign model) {
-                holder.textView.setText(model.getSignName());
-                Picasso.get().load(model.getImageUrl()).into(holder.imageView);
-                holder.v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int adapterPosition = holder.getAdapterPosition();
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
-                            Intent intent = new Intent(view.getContext(), ViewActivity.class);
-                            intent.putExtra("SignKey", getSnapshots().getSnapshot(adapterPosition).getId());
-                            view.getContext().startActivity(intent);
-                        }
-                    }
-                });
-            }
-
-
+        adapter = new FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter.ViewHolder>(options) {
             @NonNull
             @Override
-            public RecyclerViewAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view, parent, false);
-                return new RecyclerViewAdapter(v);
+            public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view, parent, false);
+                return new RecyclerViewAdapter.ViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position, @NonNull Sign model) {
+                holder.bind(model);
             }
         };
 
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
 }
+

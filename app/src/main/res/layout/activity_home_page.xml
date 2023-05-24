@@ -7,23 +7,30 @@
     android:background="#282634"
     tools:context=".Activities.HomePage">
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <LinearLayout
         android:id="@+id/homepageactive"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="16dp"> <!-- Increased bottom margin -->
 
-    </FrameLayout>
+        <!-- Add your content within the LinearLayout -->
+
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView1"
-        android:layout_width="418dp"
+        android:layout_width="0dp"
         android:layout_height="72dp"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+        app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
+import com.example.easytest.Activities.HomePage;
 import com.example.easytest.Activities.StartGame;
 import com.example.easytest.R;
 
@@ -22,7 +24,16 @@ public class TimedQuizFragment extends Fragment {
  View objectTimedQuizFragment;
 
 private Button start;
+private ImageButton arrow;
 private void attachComponents(){
+    arrow=objectTimedQuizFragment.findViewById(R.id.imageButtontimedquiz);
+    arrow.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent mainPageActivityIntent = new Intent(getContext(), HomePage.class);
+            startActivity(mainPageActivityIntent);
+        }
+    });
     requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     start=objectTimedQuizFragment.findViewById(R.id.startbutton);
     start.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +82,11 @@ private void attachComponents(){
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

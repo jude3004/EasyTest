@@ -3,10 +3,12 @@ package com.example.easytest.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.easytest.Classes.QuestionAnswer;
@@ -16,6 +18,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private Button submitbtn,ansA,ansB,ansC,ansD;
     private TextView questionTextView, totalQuestonTextView;
     int score=0;
+    private ImageButton arrow;
     int totalQuestions= QuestionAnswer.question.length;
     int currentQuestionIndex=0;
     String selectedAnswer="";
@@ -29,6 +32,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void attachcomponents()
     {
+        arrow=findViewById(R.id.imageButtonquiz);
+        arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainPageActivityIntent = new Intent(QuizActivity.this, HomePage.class);
+                startActivity(mainPageActivityIntent);
+            }
+        });
         submitbtn=findViewById(R.id.submit_btn);
         ansA=findViewById(R.id.ans_A);
         ansB=findViewById(R.id.ans_B);
@@ -82,24 +93,42 @@ ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
 
     @Override
     public void onClick(View view) {
-        ansA.setBackgroundColor(Color.WHITE);
-        ansB.setBackgroundColor(Color.WHITE);
-        ansC.setBackgroundColor(Color.WHITE);
-        ansD.setBackgroundColor(Color.WHITE);
-
         Button clickedButton = (Button) view;
-        if (clickedButton.getId() == R.id.submit_btn) {
-            if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
+
+        // Check if the clicked button is one of the answer buttons
+        if (clickedButton.getId() == R.id.ans_A ||
+                clickedButton.getId() == R.id.ans_B ||
+                clickedButton.getId() == R.id.ans_C ||
+                clickedButton.getId() == R.id.ans_D) {
+
+            // Check if the selected answer is correct
+            String selectedAnswer = clickedButton.getText().toString();
+            String correctAnswer = QuestionAnswer.correctAnswers[currentQuestionIndex];
+            boolean isCorrect = selectedAnswer.equals(correctAnswer);
+
+            // Set the background color of the clicked button based on correctness
+            int backgroundColor = isCorrect ? Color.GREEN : Color.RED;
+            clickedButton.setBackgroundColor(backgroundColor);
+
+            // Increment the score if the answer is correct
+            if (isCorrect) {
                 score++;
             }
+        }
+
+        // Handle submit button click
+        if (clickedButton.getId() == R.id.submit_btn) {
             currentQuestionIndex++;
             loadNewQuestion();
-        } else {
-            selectedAnswer = clickedButton.getText().toString();
-            clickedButton.setBackgroundColor(Color.BLACK);
         }
+
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 }
 
 

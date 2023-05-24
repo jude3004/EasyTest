@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.easytest.Activities.HomePage;
 import com.example.easytest.R;
 import com.example.easytest.Activities.SignsActivity;
 import com.example.easytest.UserManagement.ForgotPasswordFragment;
@@ -59,23 +60,11 @@ public class AddSignFragment extends Fragment {
     private Uri imageUri;
     private boolean isImageAdded = false;
 private ImageButton arrows;
-    private View rootView;
+     View rootView;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        firestore = FirebaseFirestore.getInstance();
-        storageRef = FirebaseStorage.getInstance().getReference().child("SignImage");
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_add_sign, container, false);
-        initializeViews();
-        return rootView;
-    }
 
-    private void initializeViews() {
+    private void attachcomponents() {
         imageView = rootView.findViewById(R.id.imageVIewAdd);
         editText = rootView.findViewById(R.id.inputImageName);
         uploadButton = rootView.findViewById(R.id.btnUpload);
@@ -85,11 +74,8 @@ arrows=rootView.findViewById(R.id.arrow);
 arrows.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
-        Homepagefragment homepagefragment = new Homepagefragment();
-        FragmentManager manager = getFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.framelayoutAddsigns, homepagefragment, homepagefragment.getTag())
-                .commit();
+        Intent mainPageActivityIntent = new Intent(getContext(), HomePage.class);
+        startActivity(mainPageActivityIntent);
     }
 });
         progressBar.setVisibility(View.GONE);
@@ -257,6 +243,18 @@ arrows.setOnClickListener(new View.OnClickListener() {
         super.onStart();
 
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        firestore = FirebaseFirestore.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference().child("SignImage");
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_add_sign, container, false);
+        attachcomponents();
+        return rootView;
+    }
 }
 

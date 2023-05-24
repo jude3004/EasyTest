@@ -250,7 +250,6 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initialize();
     }
 
     @Override

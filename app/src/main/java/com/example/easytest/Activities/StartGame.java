@@ -151,7 +151,7 @@ bt1.setText(newList.get(0));
             bt4.setVisibility(View.GONE);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frameLayoutMain, new GameOverFragment());
+            fragmentTransaction.replace(R.id.startgamelayout, new GameOverFragment());
             fragmentTransaction.commit();
             finish();
         } else {
@@ -159,6 +159,7 @@ bt1.setText(newList.get(0));
         }
 
     }
+
     public void answerSelected (View view)
     {
         countDownTimer.cancel();
@@ -172,5 +173,10 @@ bt1.setText(newList.get(0));
         } else {
             tvresult.setText("wrong");
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }

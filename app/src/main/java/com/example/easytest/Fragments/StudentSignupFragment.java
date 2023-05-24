@@ -72,8 +72,9 @@ public class StudentSignupFragment extends Fragment {
             }
         });
     }
-    @SuppressLint("SuspiciousIndentation")
+
     public void addUserToFirestore() {
+
         Map<String, Object> Student = new HashMap<>();
         String Name= name.getText().toString();
         String Birthday= ID.getText().toString();
@@ -148,7 +149,6 @@ public class StudentSignupFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initialize();
     }
 
     @Override

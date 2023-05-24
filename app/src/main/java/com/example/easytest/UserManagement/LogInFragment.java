@@ -123,7 +123,6 @@ public class LogInFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initialize();
     }
 
     private void logInUser() {

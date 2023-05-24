@@ -11,137 +11,122 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/signupbtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="161dp"
-            android:layout_marginTop="13dp"
-            android:layout_marginEnd="162dp"
-            android:layout_marginBottom="16dp"
-            android:text="signup"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioButton1"
-            tools:ignore="NotSibling" />
-
         <EditText
             android:id="@+id/nameet"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginStart="76dp"
-            android:layout_marginTop="155dp"
-            android:layout_marginEnd="125dp"
-            android:layout_marginBottom="36dp"
             android:ems="10"
             android:hint="Name.."
             android:inputType="textPersonName"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/stuID"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/stuID"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="135dp"
-            android:layout_marginBottom="23dp"
             android:background="@drawable/shape"
             android:ems="10"
             android:hint="   ID"
             android:inputType="textPersonName"
             android:textColorHint="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/nameet"
             app:layout_constraintBottom_toTopOf="@+id/teacher"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameet" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/teacher"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="65dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="136dp"
-            android:layout_marginBottom="39dp"
             android:ems="10"
             android:hint="teacher's name"
             android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@+id/stuID"
             app:layout_constraintBottom_toTopOf="@+id/areaet"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stuID" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <EditText
             android:id="@+id/areaet"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginStart="49dp"
-            android:layout_marginTop="39dp"
             android:background="@drawable/shape"
             android:textColorHint="@color/white"
-            android:layout_marginEnd="152dp"
-            android:layout_marginBottom="250dp"
             android:ems="10"
             android:hint="area"
             android:inputType="textPersonName"
-            app:layout_constraintBottom_toTopOf="@+id/signupbtn2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/teacher"
+            app:layout_constraintBottom_toTopOf="@+id/Radiogrp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teacher" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="52dp"
-            android:layout_marginEnd="65dp"
-            android:layout_marginBottom="14dp"
             android:text="do you have teyoria?"
-            app:layout_constraintBottom_toTopOf="@+id/Radiogrp"
-            app:layout_constraintEnd_toStartOf="@+id/signupbtn2"
-            app:layout_constraintHorizontal_bias="0.196"
+            app:layout_constraintTop_toBottomOf="@+id/areaet"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/areaet" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
         <RadioGroup
             android:id="@+id/Radiogrp"
-            android:layout_width="386dp"
-            android:layout_height="91dp"
-            android:layout_marginStart="9dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="13dp"
-            app:layout_constraintBottom_toTopOf="@+id/signupbtn2"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp">
 
             <RadioButton
                 android:id="@+id/radioButton1"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="yes" />
 
             <RadioButton
                 android:id="@+id/radioButton2"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="no" />
         </RadioGroup>
+
+        <Button
+            android:id="@+id/signupbtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="signup"
+            app:layout_constraintTop_toBottomOf="@+id/Radiogrp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

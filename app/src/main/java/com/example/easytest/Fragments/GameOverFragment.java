@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.easytest.Activities.HomePage;
 import com.example.easytest.Activities.StartGame;
 import com.example.easytest.R;
 import com.example.easytest.UserManagement.SignUpFragment;
@@ -61,11 +62,8 @@ public class GameOverFragment extends Fragment {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Homepagefragment homepageFragment = new Homepagefragment();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frameLayoutMain, homepageFragment)
-                        .commit();
+                Intent mainPageActivityIntent = new Intent(getContext(), HomePage.class);
+                startActivity(mainPageActivityIntent);
             }
         });
     }

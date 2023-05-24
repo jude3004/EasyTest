@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 public class HomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
-    private boolean flag;
+     boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,5 +115,10 @@ public class HomePage extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }

@@ -22,4 +22,5 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayoutMain, new LogInFragment());
         ft.commit();
     }
+
 }
