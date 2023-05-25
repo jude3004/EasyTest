@@ -54,7 +54,6 @@ public class SignUpFragment extends Fragment {
     private TextView signUpToLogInTxt;
     private FirebaseFirestore db;
     private RadioGroup radioGroup;
-    private boolean worked ;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -79,19 +78,18 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createUser();
+                addUserToFirestore();
                 if (rbteacher.isChecked()) {
                     TeacherSignupFragment teachersignupFragment = new TeacherSignupFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frameLayoutMain, teachersignupFragment);
-                    transaction.addToBackStack(null);
+                    transaction.replace(R.id.signupfrag, teachersignupFragment);
                     transaction.commit();
 
                 }
-                else if  (rbstudent.isChecked()) {
+                else  {
                     StudentSignupFragment studentsignupFragment = new StudentSignupFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frameLayoutMain, studentsignupFragment);
-                    transaction.addToBackStack(null);
+                    transaction.replace(R.id.signupfrag, studentsignupFragment);
                     transaction.commit();
                 }
                 String email = mailEt.getText().toString();
@@ -107,7 +105,7 @@ public class SignUpFragment extends Fragment {
                         LogInFragment logInFragment = new LogInFragment();
                         FragmentManager manager = getFragmentManager();
                         manager.beginTransaction()
-                                .replace(R.id.frameLayoutMain, logInFragment, logInFragment.getTag())
+                                .replace(R.id.signupfrag, logInFragment, logInFragment.getTag())
                                 .commit();
                     }
 
@@ -157,11 +155,13 @@ public class SignUpFragment extends Fragment {
         user.put("Email", email);
         user.put("Password", password);
         user.put("Username", username);
-        if (rbteacher.isChecked())
+        if (rbteacher.isChecked()){
             user.put("Usertype", "Teacher");
+        }
 
-        else if  (rbstudent.isChecked())
+        else{
             user.put("Usertype", "Student");
+        }
         db.collection("User")
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -206,7 +206,6 @@ public class SignUpFragment extends Fragment {
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
-                                    worked=true;
                                     Toast.makeText(getContext(), "Account created.", Toast.LENGTH_SHORT).show();
                                     if(mAuth.getCurrentUser()!=null){
                                         mAuth.signOut();
@@ -218,16 +217,8 @@ public class SignUpFragment extends Fragment {
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            })
-                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(worked==true){
-                                addUserToFirestore();
-                                worked=false;
-                            }
-                        }
-                    });
+                            });
+
                 }
                 else{
                     Toast.makeText(getContext(), "Passwords do not match.", Toast.LENGTH_SHORT).show();

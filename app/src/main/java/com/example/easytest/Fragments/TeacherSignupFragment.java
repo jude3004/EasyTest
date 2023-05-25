@@ -61,7 +61,7 @@ public class TeacherSignupFragment extends Fragment {
                 LogInFragment logInFragment=new LogInFragment();
                 FragmentManager manager=getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain,logInFragment,logInFragment.getTag())
+                        .replace(R.id.teachfragsignup,logInFragment,logInFragment.getTag())
                         .commit();
                 addUserToFirestore();
             }

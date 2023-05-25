@@ -82,7 +82,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageVIewAdd" />
 
         <ImageButton
-            android:id="@+id/arrow"
+            android:id="@+id/arrowadd"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginStart="18dp"

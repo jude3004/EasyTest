@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import com.example.easytest.Activities.HomePage;
 import com.example.easytest.Activities.StartGame;
 import com.example.easytest.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +23,7 @@ import com.example.easytest.R;
  */
 public class TimedQuizFragment extends Fragment {
  View objectTimedQuizFragment;
-
+private BottomNavigationView nav;
 private Button start;
 private ImageButton arrow;
 private void attachComponents(){
@@ -96,5 +97,11 @@ private void attachComponents(){
         attachComponents();
 
         return objectTimedQuizFragment;
+    }
+    public void onResume() {
+        super.onResume();
+        // Hide the navigation bar
+        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
+        requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 }

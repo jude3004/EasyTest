@@ -2,7 +2,9 @@ package com.example.easytest.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,26 +15,30 @@ import android.widget.TextView;
 
 import com.example.easytest.Classes.QuestionAnswer;
 import com.example.easytest.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button submitbtn,ansA,ansB,ansC,ansD;
-    private TextView questionTextView, totalQuestonTextView;
-    int score=0;
+    private Button submitButton, ansA, ansB, ansC, ansD;
+    private TextView questionTextView, totalQuestionTextView;
     private ImageButton arrow;
-    int totalQuestions= QuestionAnswer.question.length;
-    int currentQuestionIndex=0;
-    String selectedAnswer="";
+    private BottomNavigationView nav;
+    private int totalQuestions;
+    private int currentQuestionIndex;
+    private int score;
 
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-        attachcomponents();
+        attachComponents();
+        nav=findViewById(R.id.bottomNavigationView1);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
     }
-    public void attachcomponents()
-    {
-        arrow=findViewById(R.id.imageButtonquiz);
+
+    private void attachComponents() {
+        arrow = findViewById(R.id.imageButtonquiz);
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,56 +46,70 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(mainPageActivityIntent);
             }
         });
-        submitbtn=findViewById(R.id.submit_btn);
-        ansA=findViewById(R.id.ans_A);
-        ansB=findViewById(R.id.ans_B);
-        ansC=findViewById(R.id.ans_C);
-        ansD=findViewById(R.id.ans_D);
-        questionTextView=findViewById(R.id.question);
-        totalQuestonTextView=findViewById(R.id.total_questions);
+
+        submitButton = findViewById(R.id.submit_btn);
+        ansA = findViewById(R.id.ans_A);
+        ansB = findViewById(R.id.ans_B);
+        ansC = findViewById(R.id.ans_C);
+        ansD = findViewById(R.id.ans_D);
+        questionTextView = findViewById(R.id.question);
+        totalQuestionTextView = findViewById(R.id.total_questions);
+
         ansA.setOnClickListener(this);
         ansB.setOnClickListener(this);
         ansC.setOnClickListener(this);
         ansD.setOnClickListener(this);
-        submitbtn.setOnClickListener(this);
-        totalQuestonTextView.setText("total questions:"+totalQuestions);
+        submitButton.setOnClickListener(this);
+
+        totalQuestions = QuestionAnswer.question.length;
+        currentQuestionIndex = 0;
+        score = 0;
+
+        totalQuestionTextView.setText("Total Questions: " + totalQuestions);
         loadNewQuestion();
     }
 
-     void loadNewQuestion() {
-        if (currentQuestionIndex==totalQuestions){
+    private void loadNewQuestion() {
+        if (currentQuestionIndex == totalQuestions) {
             finishQuiz();
             return;
         }
-questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
-ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
-         ansB.setText(QuestionAnswer.choices[currentQuestionIndex][1]);
-         ansC.setText(QuestionAnswer.choices[currentQuestionIndex][2]);
-         ansD.setText(QuestionAnswer.choices[currentQuestionIndex][3]);
+
+        questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
+        ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
+        ansB.setText(QuestionAnswer.choices[currentQuestionIndex][1]);
+        ansC.setText(QuestionAnswer.choices[currentQuestionIndex][2]);
+        ansD.setText(QuestionAnswer.choices[currentQuestionIndex][3]);
+
+        // Reset the background color of all the answer buttons
+        ansA.setBackgroundColor(Color.TRANSPARENT);
+        ansB.setBackgroundColor(Color.TRANSPARENT);
+        ansC.setBackgroundColor(Color.TRANSPARENT);
+        ansD.setBackgroundColor(Color.TRANSPARENT);
     }
 
-     void finishQuiz() {
-        String passStatus="";
-        if (score>totalQuestions*0.6){
-            passStatus="passed";
-        }
-        else{
-            passStatus="failed";
-        }
+    private void finishQuiz() {
+        String passStatus = (score > totalQuestions * 0.6) ? "passed" : "failed";
+        String message = "Score: " + score + " out of " + totalQuestions;
+
         new AlertDialog.Builder(this)
                 .setTitle(passStatus)
-                .setMessage("score is:"+score+"out of"+ totalQuestions)
-                .setPositiveButton("Restart",((dialogInterface, i) -> restartQuiz()))
+                .setMessage(message)
+                .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        restartQuiz();
+                    }
+                })
                 .setCancelable(false)
                 .show();
     }
 
-     void restartQuiz() {
-        score=0;
-        currentQuestionIndex=0;
+    private void restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
         loadNewQuestion();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -121,13 +141,6 @@ ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
             currentQuestionIndex++;
             loadNewQuestion();
         }
-
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 }
 

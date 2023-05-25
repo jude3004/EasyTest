@@ -42,8 +42,11 @@ public class ForgotPasswordFragment extends Fragment {
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mainPageActivityIntent = new Intent(getContext(), HomePage.class);
-                startActivity(mainPageActivityIntent);
+                LogInFragment logInFragment = new LogInFragment();
+                FragmentManager manager = getFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.frgtpassfrag, logInFragment, logInFragment.getTag())
+                        .commit();
             }
         });
         etemail = objectForgotPasswordFragment.findViewById(R.id.frgtpsswrdmail);
@@ -72,7 +75,7 @@ public class ForgotPasswordFragment extends Fragment {
                     LogInFragment logInFragment = new LogInFragment();
                     FragmentManager manager = getFragmentManager();
                     manager.beginTransaction()
-                            .replace(R.id.frameLayoutMain, logInFragment, logInFragment.getTag())
+                            .replace(R.id.frgtpassfrag, logInFragment, logInFragment.getTag())
                             .commit();
                 } else {
                     Toast.makeText(getContext(), "failed to reset password", Toast.LENGTH_SHORT).show();

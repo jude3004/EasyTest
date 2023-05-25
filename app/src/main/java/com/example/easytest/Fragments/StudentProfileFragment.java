@@ -32,6 +32,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.util.Map;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link StudentProfileFragment#newInstance} factory method to
@@ -39,95 +41,83 @@ import org.checkerframework.checker.units.qual.A;
  */
 public class StudentProfileFragment extends Fragment {
      View objectStudentProfileFragment;
+     private BottomNavigationView nav;
     private FirebaseAuth mAuth;
-    private BottomNavigationView bottomNavigationView;
-    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    private CollectionReference studentCollectionRef = firestore.collection("Student");
-    private CollectionReference userCollectionRef = firestore.collection("User");
     private FirebaseUser currentUser;
-    private Button signout;
-    private void attachComponents() {
-        final TextView email = objectStudentProfileFragment.findViewById(R.id.emaildetail);
-        final TextView id = objectStudentProfileFragment.findViewById(R.id.iddetail);
-        final TextView area = objectStudentProfileFragment.findViewById(R.id.cartypedetail);
-        final TextView name = objectStudentProfileFragment.findViewById(R.id.namedetail);
-        bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView1);
-        bottomNavigationView.setVisibility(View.VISIBLE);
-        signout = objectStudentProfileFragment.findViewById(R.id.signoutbtn);
+    private FirebaseFirestore db;
+    private CollectionReference teachersCollection;
+    private Button signoutstu;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initializeFirebase();
+    }
+
+    private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        teachersCollection = db.collection("Student");
+    }
 
-        if (currentUser != null) {
-            String currentUserEmail = currentUser.getEmail();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        objectStudentProfileFragment = inflater.inflate(R.layout.fragment_student_profile, container, false);
+        attachComponents();
+        return objectStudentProfileFragment;
+    }
 
-            // Query to fetch the user with the current user's email
-            Query userQuery = userCollectionRef.whereEqualTo("Email", currentUserEmail);
+    private void attachComponents() {
+        final TextView emaildis = objectStudentProfileFragment.findViewById(R.id.emaildetailstu);
+        final TextView iddis = objectStudentProfileFragment.findViewById(R.id.iddetailstu);
+        final TextView areaedis = objectStudentProfileFragment.findViewById(R.id.areadetailstu);
+        final TextView namedis = objectStudentProfileFragment.findViewById(R.id.namedetailstu);
+        signoutstu = objectStudentProfileFragment.findViewById(R.id.signoutbuttonstu);
+        String userEmail = currentUser != null ? currentUser.getEmail() : "";
+        Query query = teachersCollection.whereEqualTo("Email", userEmail);
 
-            userQuery.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Retrieve the user document
-                        DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
-
-                        // Get the email from the user document
-                        String userEmail = userDocument.getString("Email");
-
-                        // Query to fetch the teacher with the matching email
-                        Query studentQuery = studentCollectionRef.whereEqualTo("Email", userEmail);
-
-                        studentQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                if (!documentSnapshots.isEmpty()) {
-                                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                                        String studentId = doc.getDocument().getString("ID");
-                                        String studentName = doc.getDocument().getString("Name");
-                                        String studentEmail = doc.getDocument().getString("Email");
-                                        String studentarea = doc.getDocument().getString("Area");
-
-                                        // Update the TextViews with the teacher data
-                                        id.setText(studentId);
-                                        name.setText(studentName);
-                                        email.setText(studentEmail);
-                                        area.setText(studentarea);
-                                    }
-                                } else
-                                    Toast.makeText(getContext(), "Error fetching teacher data!", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
+        query.get().addOnCompleteListener(task -> {
+            try {
+                if (task.isSuccessful()) {
+                    QuerySnapshot snapshot = task.getResult();
+                    if (snapshot != null && !snapshot.isEmpty()) {
+                        // Retrieve the Teacher object as a HashMap
+                        Map<String, Object> teacherMap = snapshot.getDocuments().get(0).getData();
+                        assert teacherMap != null;
+                        final String name = (String) teacherMap.get("Name");
+                        final String area = (String) teacherMap.get("Area");
+                        final String id = (String) teacherMap.get("ID");
+                        namedis.setText(name);
+                            areaedis.setText(area);
+                        iddis.setText(id);
+                   emaildis.setText(userEmail);
+                    } else {
+                        // No matching teacher found
+                        Toast.makeText(requireContext(), "No matching student found", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    // Error occurred while fetching the teacher object
+                    Exception e = task.getException();
+                    Toast.makeText(requireContext(), "Error fetching student object: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(), "Error fetching user data!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            // User is not authenticated, handle the case accordingly
-            Toast.makeText(getContext(), "User not authenticated!", Toast.LENGTH_SHORT).show();
-        }
-
-        signout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Signout();
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(requireContext(), "Error fetching student object: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        signoutstu.setOnClickListener(view -> Signout());
     }
-    private void Signout(){
-        mAuth.signOut();
+
+    private void Signout() {
         LogInFragment logInFragment = new LogInFragment();
         FragmentManager manager = getFragmentManager();
         manager.beginTransaction()
                 .replace(R.id.studentfragprof, logInFragment, logInFragment.getTag())
                 .commit();
+        mAuth.signOut();
     }
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -159,21 +149,16 @@ public class StudentProfileFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+
 
     @Override
     public void onStart() {
         super.onStart();
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        objectStudentProfileFragment = inflater.inflate(R.layout.fragment_student_profile, container, false);
-        attachComponents();
-        return objectStudentProfileFragment;
+    public void onResume() {
+        super.onResume();
+        // Hide the navigation bar
+        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
+        nav.setVisibility(View.VISIBLE);
     }
 }

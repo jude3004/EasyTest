@@ -28,9 +28,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class Homepagefragment extends Fragment {
     private RecyclerView recyclerView;
+    private BottomNavigationView nav;
     private PhotoAdapter adapter;
     private View objectHome;
-    private BottomNavigationView bottomNavigationView;
 
 private void attatchcomponents(){
     recyclerView = objectHome.findViewById(R.id.recyclerViewhome);
@@ -39,9 +39,6 @@ private void attatchcomponents(){
     int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
     adapter = new PhotoAdapter(photos, requireContext());
     recyclerView.setAdapter(adapter);
-
-    bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView1);
-    bottomNavigationView.setVisibility(View.VISIBLE);
 }
 
     // TODO: Rename parameter arguments, choose names that match
@@ -91,17 +88,17 @@ private void attatchcomponents(){
         attatchcomponents();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        bottomNavigationView.setVisibility(View.GONE);
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_homepagefragment, container, false);
     }
-
+    public void onResume() {
+        super.onResume();
+        // Hide the navigation bar
+        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
+        nav.setVisibility(View.VISIBLE);
+    }
 
    }

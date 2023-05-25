@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/signupstufrag"
     android:background="#282634"
     tools:context=".Fragments.StudentSignupFragment">
 
@@ -72,7 +73,7 @@
             android:hint="area"
             android:inputType="textPersonName"
             app:layout_constraintTop_toBottomOf="@+id/teacher"
-            app:layout_constraintBottom_toTopOf="@+id/Radiogrp"
+            app:layout_constraintBottom_toTopOf="@+id/Radiogrpstu"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="24dp"
@@ -92,7 +93,7 @@
             android:layout_marginEnd="32dp" />
 
         <RadioGroup
-            android:id="@+id/Radiogrp"
+            android:id="@+id/Radiogrpstu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -103,13 +104,13 @@
             android:layout_marginEnd="32dp">
 
             <RadioButton
-                android:id="@+id/radioButton1"
+                android:id="@+id/radioButton1stu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="yes" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioButton2stu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="no" />
@@ -120,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="signup"
-            app:layout_constraintTop_toBottomOf="@+id/Radiogrp"
+            app:layout_constraintTop_toBottomOf="@+id/Radiogrpstu"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="24dp"

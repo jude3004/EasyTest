@@ -29,6 +29,7 @@ import com.example.easytest.Activities.SignsActivity;
 import com.example.easytest.UserManagement.ForgotPasswordFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +50,7 @@ import java.util.Map;
 
 public class AddSignFragment extends Fragment {
     private static final int REQUEST_CODE_IMAGE = 101;
-
+private BottomNavigationView nav;
     private Button uploadButton;
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
@@ -70,7 +71,7 @@ private ImageButton arrows;
         uploadButton = rootView.findViewById(R.id.btnUpload);
         progressBar = rootView.findViewById(R.id.progressbar);
         textViewProgress = rootView.findViewById(R.id.textProgress);
-arrows=rootView.findViewById(R.id.arrow);
+arrows=rootView.findViewById(R.id.arrowadd);
 arrows.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
@@ -255,6 +256,12 @@ arrows.setOnClickListener(new View.OnClickListener() {
         rootView = inflater.inflate(R.layout.fragment_add_sign, container, false);
         attachcomponents();
         return rootView;
+    }
+    public void onResume() {
+        super.onResume();
+        // Hide the navigation bar
+        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
+        requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 }
 

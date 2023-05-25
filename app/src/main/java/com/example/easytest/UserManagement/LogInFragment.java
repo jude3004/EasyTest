@@ -57,7 +57,7 @@ public class LogInFragment extends Fragment {
                 SignUpFragment signUpFragment = new SignUpFragment();
                 FragmentManager manager = getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain, signUpFragment, signUpFragment.getTag())
+                        .replace(R.id.loginfrag, signUpFragment, signUpFragment.getTag())
                         .commit();
             }
         });
@@ -68,7 +68,7 @@ public class LogInFragment extends Fragment {
                 ForgotPasswordFragment forgotpasswordFragment = new ForgotPasswordFragment();
                 FragmentManager manager = getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain, forgotpasswordFragment, forgotpasswordFragment.getTag())
+                        .replace(R.id.loginfrag, forgotpasswordFragment, forgotpasswordFragment.getTag())
                         .commit();
             }
         });

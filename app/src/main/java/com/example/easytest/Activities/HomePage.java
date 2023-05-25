@@ -1,6 +1,8 @@
 package com.example.easytest.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,15 +33,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class HomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
-     boolean flag;
+     String usertype;
+    private CollectionReference userCollection;
+    private FirebaseFirestore db;
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseUser user = auth.getCurrentUser();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,75 +63,68 @@ public class HomePage extends AppCompatActivity {
         manager.beginTransaction()
                 .replace(R.id.homepageactive, homepagefragment, homepagefragment.getTag())
                 .commit();
-        checkUserType();
         attachComponents();
-
-
-    }
-
-    private void checkUserType() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String userId = null;
-        if (firebaseUser != null) {
-            userId = firebaseUser.getUid();
-        }
-
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        DocumentReference userRef = firestore.collection("User").document(userId);
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    String userType = documentSnapshot.getString("Usertype");
-                    if (userType != null) {
-                        if (userType.equals("Teacher")) {
-                            flag = true;
-                        } else if (userType.equals("Student")) {
-                            flag = false;
-                        }
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Missing fields identified.", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void attachComponents() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView1);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-
-                switch (item.getItemId()) {
-                    case R.id.profile:
-                        if (flag) {
-                            transaction.replace(R.id.homepageactive, new TeacherProfileFragment());
+        db = FirebaseFirestore.getInstance();
+        userCollection = db.collection("User");
+        if (user != null) {
+            String email = user.getEmail();
+            Query query = userCollection.whereEqualTo("Email", email);
+            query.get().addOnCompleteListener(task -> {
+                try {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+                        if (snapshot != null && !snapshot.isEmpty()) {
+                            Map<String, Object> userMap = snapshot.getDocuments().get(0).getData();
+                            assert userMap != null;
+                            usertype = (String) userMap.get("Usertype");
                         } else {
-                            transaction.replace(R.id.homepageactive, new StudentProfileFragment());
+                            // No matching teacher found
+                            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
                         }
-                        break;
-                    case R.id.home:
-                        transaction.replace(R.id.homepageactive, new Homepagefragment());
-                        break;
+                    } else {
+                        // Error occurred while fetching the teacher object
+                        Exception e = task.getException();
+                        Toast.makeText(this, "Error:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            });
+            bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    FragmentTransaction transaction = fm.beginTransaction();
 
-                transaction.commit();
-                return true;
-            }
+                    switch (item.getItemId()) {
+                        case R.id.profile:
+                            if (usertype.equals("Teacher")) {
+                                transaction.replace(R.id.homepageactive, new TeacherProfileFragment());
+                            } else {
+                                transaction.replace(R.id.homepageactive, new StudentProfileFragment());
+                            }
+                            break;
+                        case R.id.home:
+                            transaction.replace(R.id.homepageactive, new Homepagefragment());
+                            break;
+                    }
 
-        });
-    }
+                    transaction.commit();
+                    return true;
+                }
+            });
+
+        }}
+
 
     @Override
     protected void onStart() {
         super.onStart();
     }
 }
+

@@ -43,7 +43,7 @@ public class StudentSignupFragment extends Fragment {
     private Button signupbutton;
     private EditText name, ID, teacher_name, area;
     private String email;
-    private RadioGroup radioGroup;
+     RadioGroup radioGroupstu;
     private RadioButton yes,no;
      View objectstudentsignup;
     private SharedPreferences sharedPreferences;
@@ -56,33 +56,35 @@ public class StudentSignupFragment extends Fragment {
         ID=objectstudentsignup.findViewById(R.id.stuID);
         teacher_name=objectstudentsignup.findViewById(R.id.teacher);
         area=objectstudentsignup.findViewById(R.id.areaet);
-        radioGroup = objectstudentsignup.findViewById(R.id.Radiogrp);
-        yes = objectstudentsignup.findViewById(R.id.radio_button_1);
-        no = objectstudentsignup.findViewById(R.id.radio_button_2);
+        radioGroupstu = objectstudentsignup.findViewById(R.id.Radiogrpstu);
+        yes = objectstudentsignup.findViewById(R.id.radioButton1stu);
+        no = objectstudentsignup.findViewById(R.id.radioButton2stu);
 
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addUserToFirestore();
                 LogInFragment logInFragment=new LogInFragment();
                 FragmentManager manager=getFragmentManager();
                 manager.beginTransaction()
-                        .replace(R.id.frameLayoutMain,logInFragment,logInFragment.getTag())
+                        .replace(R.id.signupstufrag,logInFragment,logInFragment.getTag())
                         .commit();
-                addUserToFirestore();
+
             }
         });
     }
 
+    @SuppressLint("SuspiciousIndentation")
     public void addUserToFirestore() {
 
         Map<String, Object> Student = new HashMap<>();
         String Name= name.getText().toString();
-        String Birthday= ID.getText().toString();
+        String id= ID.getText().toString();
         String Teacher= teacher_name.getText().toString();
         String Area= area.getText().toString();
         Student.put("Name", Name);
-        Student.put("Birthday", Birthday);
-        Student.put("Teacher", Teacher);
+        Student.put("ID", id);
+        Student.put("Teacher_Name", Teacher);
         Student.put("Area", Area);
         email = sharedPreferences.getString("email", "");
             Student.put("Email", email);

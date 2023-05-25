@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.example.easytest.Fragments.AddSignFragment;
 import com.example.easytest.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,31 +30,31 @@ import com.squareup.picasso.Picasso;
 
 public class SignsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private FloatingActionButton floatingButton;
+    private BottomNavigationView nav;
+    private ImageButton add;
     private FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter.ViewHolder> adapter;
     private CollectionReference collectionRef;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signs);
         attachComponents();
+        nav=findViewById(R.id.bottomNavigationView1);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
     }
 
     private void attachComponents() {
         recyclerView = findViewById(R.id.recyclerViewsigns);
-        floatingButton = findViewById(R.id.floatingbtn);
+        add = findViewById(R.id.addbtn);
         collectionRef = FirebaseFirestore.getInstance().collection("SignImages");
 
         // Define and set the layout manager
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-
-
-
-
-    floatingButton = findViewById(R.id.floatingbtn);
-        floatingButton.setOnClickListener(new View.OnClickListener() {
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getSupportFragmentManager();

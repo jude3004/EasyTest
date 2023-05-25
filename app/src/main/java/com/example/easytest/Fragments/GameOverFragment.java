@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 import com.example.easytest.Activities.HomePage;
 import com.example.easytest.Activities.StartGame;
 import com.example.easytest.R;
-import com.example.easytest.UserManagement.SignUpFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,32 +27,34 @@ public class GameOverFragment extends Fragment {
     private Button restart,exit;
     View objectGameOverFragment;
     private void attachComponents() {
-        int points = getArguments().getInt("points");
-        tvpoints.setText(String.valueOf(points));
-        tvpoints = objectGameOverFragment.findViewById(R.id.tvPoints);
-        tvpersonalBest = objectGameOverFragment.findViewById(R.id.tvPersonalBest);
-        restart = objectGameOverFragment.findViewById(R.id.restartbtn);
-        exit = objectGameOverFragment.findViewById(R.id.exitbtn);
-        tvpoints.setText(String.valueOf(points));
+        tvpoints = objectGameOverFragment.findViewById(R.id.tvPointsover);
+        tvpersonalBest = objectGameOverFragment.findViewById(R.id.tvPersonalBestover);
+        restart = objectGameOverFragment.findViewById(R.id.restartbtnover);
+        exit = objectGameOverFragment.findViewById(R.id.exitbtnover);
 
-        sharedPreferences = getActivity().getSharedPreferences("pref", 0);
-        int pointsSP = sharedPreferences.getInt("pointsSP", 0);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            int points = arguments.getInt("points");
+            tvpoints.setText(String.valueOf(points));
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (points > pointsSP) {
-            pointsSP = points;
-            editor.putInt("pointsSP", pointsSP);
-            editor.apply();
+            sharedPreferences = getActivity().getSharedPreferences("pref", 0);
+            int pointsSP = sharedPreferences.getInt("pointsSP", 0);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (points > pointsSP) {
+                pointsSP = points;
+                editor.putInt("pointsSP", pointsSP);
+                editor.apply();
+            }
+
+            tvpersonalBest.setText(String.valueOf(pointsSP));
         }
-
-        tvpersonalBest.setText(String.valueOf(pointsSP));
 
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), StartGame.class);
+                Intent intent = new Intent(getContext(), StartGame.class);
                 startActivity(intent);
-                getActivity().finish();
             }
         });
 
@@ -67,6 +66,7 @@ public class GameOverFragment extends Fragment {
             }
         });
     }
+
 
 
 

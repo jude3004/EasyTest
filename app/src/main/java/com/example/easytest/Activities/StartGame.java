@@ -100,7 +100,7 @@ if (index>signList.size()-1) {
     bt4.setVisibility(View.GONE);
     FragmentManager fragmentManager = getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.replace(R.id.frameLayoutMain, new GameOverFragment());
+    fragmentTransaction.replace(R.id.startgamelayout, new GameOverFragment());
     fragmentTransaction.commit();
 
 // Create an instance of the GameOverFragment
@@ -149,13 +149,20 @@ bt1.setText(newList.get(0));
             bt2.setVisibility(View.GONE);
             bt3.setVisibility(View.GONE);
             bt4.setVisibility(View.GONE);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.startgamelayout, new GameOverFragment());
-            fragmentTransaction.commit();
+          //  FragmentManager fragmentManager = getSupportFragmentManager();
+          //  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            //fragmentTransaction.replace(R.id.startgamelayout, new GameOverFragment());
+            //fragmentTransaction.commit();
+            // Create an Intent to navigate to the target activity
+            Intent intent = new Intent(StartGame.this, HomePage.class);
+
+// Start the target activity
+            startActivity(intent);
+
             finish();
         } else {
             startGame();
+            tvresult.setText(null);
         }
 
     }

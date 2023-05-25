@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/restartbtn"
+            android:id="@+id/restartbtnover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="restart"
@@ -22,7 +22,7 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/exitbtn"
+            android:id="@+id/exitbtnover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="exit"
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvPoints"
+                android:id="@+id/tvPointsover"
                 android:layout_weight="1"
                 android:textColor="@android:color/holo_green_light"
                 android:textSize="60sp"/>
@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/tvPersonalBest"
+                android:id="@+id/tvPersonalBestover"
                 android:textColor="#ff6000"
                 android:textSize="30sp"/>
         </LinearLayout>
