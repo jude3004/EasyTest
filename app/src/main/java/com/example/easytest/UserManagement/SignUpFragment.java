@@ -1,7 +1,6 @@
 package com.example.easytest.UserManagement;
 
 import static android.content.ContentValues.TAG;
-import static com.google.common.reflect.Reflection.initialize;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,10 +24,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.easytest.R;
 import com.example.easytest.Fragments.StudentSignupFragment;
 import com.example.easytest.Fragments.TeacherSignupFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,7 +44,7 @@ import java.util.regex.Pattern;
 public class SignUpFragment extends Fragment {
 
     View objectSignUpFragment;
-    private RadioButton rbstudent, rbteacher;
+     RadioButton rbstudent, rbteacher;
     private Button signUpBtn;
     private EditText mailEt,passEt,confirmPassEt, etusername;
     private FirebaseAuth mAuth;
@@ -58,6 +55,15 @@ public class SignUpFragment extends Fragment {
     SharedPreferences.Editor editor;
 
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        objectSignUpFragment=inflater.inflate(R.layout.fragment_sign_up,container,false);
+        attachComponents();
+
+
+        return objectSignUpFragment;
+    }
 
     private void attachComponents() {
         signUpBtn = objectSignUpFragment.findViewById(R.id.btnSignUp);
@@ -78,7 +84,7 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createUser();
-                addUserToFirestore();
+addUserToFirestore();
                 if (rbteacher.isChecked()) {
                     TeacherSignupFragment teachersignupFragment = new TeacherSignupFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -196,7 +202,6 @@ public class SignUpFragment extends Fragment {
         return matcher.matches();
 
     }
-
     public void createUser()
     {
             if(!mailEt.getText().toString().isEmpty()&&!passEt.getText().toString().isEmpty()&&!confirmPassEt.getText().toString().isEmpty()&&!etusername.getText().toString().isEmpty()&&radioGroup.getCheckedRadioButtonId() != -1)
@@ -207,7 +212,8 @@ public class SignUpFragment extends Fragment {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
                                     Toast.makeText(getContext(), "Account created.", Toast.LENGTH_SHORT).show();
-                                    if(mAuth.getCurrentUser()!=null){
+                                    addUserToFirestore();
+                                    if (mAuth.getCurrentUser() != null) {
                                         mAuth.signOut();
                                     }
                                 }
@@ -218,7 +224,6 @@ public class SignUpFragment extends Fragment {
                                     Toast.makeText(getContext(),e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                 }
                 else{
                     Toast.makeText(getContext(), "Passwords do not match.", Toast.LENGTH_SHORT).show();
@@ -243,12 +248,5 @@ public class SignUpFragment extends Fragment {
         super.onStart();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        objectSignUpFragment=inflater.inflate(R.layout.fragment_sign_up,container,false);
-        attachComponents();
 
-        return objectSignUpFragment;
-    }
 }

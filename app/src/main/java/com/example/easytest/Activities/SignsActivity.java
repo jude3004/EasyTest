@@ -30,8 +30,6 @@ import com.squareup.picasso.Picasso;
 
 public class SignsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private BottomNavigationView nav;
-    private ImageButton add;
     private FirestoreRecyclerAdapter<Sign, RecyclerViewAdapter.ViewHolder> adapter;
     private CollectionReference collectionRef;
 
@@ -41,28 +39,16 @@ public class SignsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signs);
         attachComponents();
-        nav=findViewById(R.id.bottomNavigationView1);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
     }
 
     private void attachComponents() {
         recyclerView = findViewById(R.id.recyclerViewsigns);
-        add = findViewById(R.id.addbtn);
         collectionRef = FirebaseFirestore.getInstance().collection("SignImages");
 
         // Define and set the layout manager
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.Signlayout, new AddSignFragment());
-                transaction.commit();
-            }
-        });
 
         LoadData();
     }

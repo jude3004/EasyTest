@@ -50,7 +50,6 @@ import java.util.Map;
 
 public class AddSignFragment extends Fragment {
     private static final int REQUEST_CODE_IMAGE = 101;
-private BottomNavigationView nav;
     private Button uploadButton;
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
@@ -252,16 +251,19 @@ arrows.setOnClickListener(new View.OnClickListener() {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rootView = view;
+        BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavigationView1);
+        navBar.setVisibility(View.GONE);
+        attachcomponents();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add_sign, container, false);
-        attachcomponents();
         return rootView;
     }
-    public void onResume() {
-        super.onResume();
-        // Hide the navigation bar
-        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
-        requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
+
 }
 

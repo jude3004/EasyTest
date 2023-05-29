@@ -101,9 +101,18 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         restartQuiz();
                     }
                 })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent homePageActivityIntent = new Intent(QuizActivity.this, HomePage.class);
+                        startActivity(homePageActivityIntent);
+                        finish();
+                    }
+                })
                 .setCancelable(false)
                 .show();
     }
+
 
     private void restartQuiz() {
         currentQuestionIndex = 0;

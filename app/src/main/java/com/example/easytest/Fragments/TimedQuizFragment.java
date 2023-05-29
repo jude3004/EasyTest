@@ -3,6 +3,8 @@ package com.example.easytest.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,7 +25,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class TimedQuizFragment extends Fragment {
  View objectTimedQuizFragment;
-private BottomNavigationView nav;
 private Button start;
 private ImageButton arrow;
 private void attachComponents(){
@@ -91,17 +92,18 @@ private void attachComponents(){
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        objectTimedQuizFragment=inflater.inflate(R.layout.fragment_timed_quiz,container,false);
-        attachComponents();
 
-        return objectTimedQuizFragment;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        objectTimedQuizFragment = view;
+        BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavigationView1);
+        navBar.setVisibility(View.GONE);
+        attachComponents();
     }
-    public void onResume() {
-        super.onResume();
-        // Hide the navigation bar
-        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
-        requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        objectTimedQuizFragment = inflater.inflate(R.layout.fragment_timed_quiz, container, false);
+        return objectTimedQuizFragment;
     }
 }

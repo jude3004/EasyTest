@@ -28,18 +28,36 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class Homepagefragment extends Fragment {
     private RecyclerView recyclerView;
-    private BottomNavigationView nav;
     private PhotoAdapter adapter;
     private View objectHome;
 
-private void attatchcomponents(){
-    recyclerView = objectHome.findViewById(R.id.recyclerViewhome);
-    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    private void attachComponents() {
+        recyclerView = objectHome.findViewById(R.id.recyclerViewhome);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-    int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
-    adapter = new PhotoAdapter(photos, requireContext());
-    recyclerView.setAdapter(adapter);
-}
+        int[] photos = {R.drawable.signsactivityphoto, R.drawable.addsignsfragment, R.drawable.quizphoto, R.drawable.questionphoto};
+        adapter = new PhotoAdapter(photos, requireContext());
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        objectHome = view;
+        attachComponents();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_homepagefragment, container, false);
+
+        BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavigationView1);
+        navBar.setVisibility(View.VISIBLE);
+
+        return view;
+    }
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,31 +92,9 @@ private void attatchcomponents(){
     }
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        objectHome = view;
 
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        attatchcomponents();
-    }
 
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_homepagefragment, container, false);
-    }
-    public void onResume() {
-        super.onResume();
-        // Hide the navigation bar
-        nav=requireActivity().findViewById(R.id.bottomNavigationView1);
-        nav.setVisibility(View.VISIBLE);
-    }
 
    }
