@@ -1,10 +1,13 @@
 package com.example.easytest.Activities;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -91,32 +94,52 @@ public class StartGame extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(StartGame.this);
-                builder.setTitle("Game Over")
-                        .setMessage("Your score: " + points + "/" + signList.size())
-                        .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                restartQuiz();
-                            }
-                        })
-                        .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                exitGame();
-                            }
-                        })
-                        .setCancelable(false)
-                        .show();
+                Log.d(TAG, "onFinish: entered");
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StartGame.this);
+                    builder.setTitle("Game Over")
+                            .setMessage("Your score: " + points + "/" + signList.size())
+                            .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    restartQuiz();
+                                }
+                            })
+                            .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    exitGame();
+                                }
+                            })
+                            .setCancelable(false)
+                            .show();
+                }catch (Exception e){
+                    Log.e(TAG, "Exception: "+e );
+
+                }finally{
+                    Log.d(TAG, "finally: entered");
+                }
+
             }
         }.start();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: Paused");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Destroy");
+    }
+
     private void restartQuiz() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.startgamelayout, new TimedQuizFragment());
-        fragmentTransaction.commit();
+        finish();
+        Intent i = new Intent(StartGame.this,StartGame.class);
+        startActivity(i);
     }
 
     private void exitGame() {
@@ -147,7 +170,23 @@ public class StartGame extends AppCompatActivity {
         countDownTimer.cancel();
         index++;
         if (index > signList.size() - 1) {
-            finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(StartGame.this);
+            builder.setTitle("Game Over")
+                    .setMessage("Your score: " + points + "/" + signList.size())
+                    .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            restartQuiz();
+                        }
+                    })
+                    .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            exitGame();
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
         } else {
             startGame();
             tvresult.setText(null);
