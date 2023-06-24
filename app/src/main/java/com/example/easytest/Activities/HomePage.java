@@ -82,11 +82,9 @@ public class HomePage extends AppCompatActivity {
                             assert userMap != null;
                             usertype = (String) userMap.get("Usertype");
                         } else {
-                            // No matching teacher found
                             Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        // Error occurred while fetching the teacher object
                         Exception e = task.getException();
                         Toast.makeText(this, "Error:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -103,9 +101,9 @@ public class HomePage extends AppCompatActivity {
 
                     switch (item.getItemId()) {
                         case R.id.profile:
-                            if (usertype.equals("Teacher")) {
+                            if (usertype!=null && usertype.equals("Teacher")) {
                                 transaction.replace(R.id.homepageactive, new TeacherProfileFragment());
-                            } else {
+                            } else if (usertype!=null && usertype.equals("Student")) {
                                 transaction.replace(R.id.homepageactive, new StudentProfileFragment());
                             }
                             break;

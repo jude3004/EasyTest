@@ -149,7 +149,6 @@ private BottomNavigationView nav;
 
     public void onResume() {
         super.onResume();
-        // Hide the navigation bar
         nav=requireActivity().findViewById(R.id.bottomNavigationView1);
        nav.setVisibility(View.VISIBLE);
     }

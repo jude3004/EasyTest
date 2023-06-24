@@ -82,7 +82,6 @@ public class StudentProfileFragment extends Fragment {
                 if (task.isSuccessful()) {
                     QuerySnapshot snapshot = task.getResult();
                     if (snapshot != null && !snapshot.isEmpty()) {
-                        // Retrieve the Teacher object as a HashMap
                         Map<String, Object> teacherMap = snapshot.getDocuments().get(0).getData();
                         assert teacherMap != null;
                         final String name = (String) teacherMap.get("Name");
@@ -157,7 +156,6 @@ public class StudentProfileFragment extends Fragment {
     }
     public void onResume() {
         super.onResume();
-        // Hide the navigation bar
         nav=requireActivity().findViewById(R.id.bottomNavigationView1);
         nav.setVisibility(View.VISIBLE);
     }

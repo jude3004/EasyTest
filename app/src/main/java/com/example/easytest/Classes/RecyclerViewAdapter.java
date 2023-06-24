@@ -1,5 +1,7 @@
 package com.example.easytest.Classes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.easytest.Activities.DetailsActivity;
 import com.example.easytest.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,9 +24,11 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private List<Sign> signList;
+    private Context context;
 
-    public RecyclerViewAdapter(List<Sign> signList) {
+    public RecyclerViewAdapter(List<Sign> signList, Context context) {
         this.signList = signList;
+        this.context = context;
     }
 
     @NonNull
@@ -37,7 +42,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Sign sign = signList.get(position);
         holder.bind(sign);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra("imagename", sign.getSignName());
+                intent.putExtra("imageurl", sign.getImageUrl());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -59,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void bind(Sign sign) {
             textView.setText(sign.getSignName());
             Picasso.get().load(sign.getImageUrl()).into(imageView);
+
         }
     }
 }
-
